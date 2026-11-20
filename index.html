@@ -266,7 +266,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 4:05 PM ET";
+const UPDATED="Fri Nov 20, 4:10 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -612,7 +612,7 @@ function viewMap(){
   h+=`<div class="card"><div class="k2">Before you fly</div><div class="sub">In the Google Maps app, tap your profile picture, then <b>Offline maps</b> → <b>Select your own map</b>, and cover Sarasota. Search and directions then work without data.</div></div>`;
   return h;
 }
-const INFO1=[["Flights","LNONWJ · American Airlines"],["Sven AAdvantage","Gold"],["Bags","1st checked bag free each · 2nd $60 at airport, $55 online"],["Card used","Mastercard ending 1991"],["Time zone","Same as Charleston (ET)"]];
+const INFO1=[["Flights","LNONWJ · American Airlines"],["Sven AAdvantage","Gold"],["Bags","1st checked bag free each · 2nd $60 at airport, $55 online"],["Time zone","Same as Charleston (ET)"]];
 const INFO2=[];
 const INFO2N=[];
 function infoRows(L,base){return leList(L,base.map(([l,v],i)=>({id:"r"+i,l,v}))).map(x=>leRow(L,x,[["l","Label"],["v","Value",1]],`<div class="line"><span class="sub">${esc(x.l)}</span><span${/^missing$/i.test(String(x.v).trim())?' style="color:var(--bad);font-weight:700"':""}>${esc(x.v)}</span></div>`)).join("")}
