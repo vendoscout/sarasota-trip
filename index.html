@@ -90,7 +90,7 @@ ul.notes li{margin:3px 0}
 textarea{width:100%;min-height:60px;font:15px var(--f-ui);border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface2);color:var(--ink);margin-top:8px}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
   padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs .in{max-width:none;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr)}
+nav.tabs .in{max-width:none;margin:0 auto;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .tab{appearance:none;background:none;border:0;color:var(--muted);font:600 11px var(--f-ui);min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
 .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tab[aria-current="true"]{color:var(--sea)}
@@ -278,7 +278,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 6:30 PM ET";
+const UPDATED="Fri Nov 20, 6:55 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -1001,7 +1001,7 @@ document.addEventListener("change",ev=>{const t=ev.target,id=t.dataset.evday||t.
 function findGet(){try{return JSON.parse(localStorage.getItem("find:v1")||"{}")||{}}catch(e){return {}}}
 let findEdit=false;
 function viewFind(){const f=findGet(),link=(f.link||"").trim();
-  let h=`<h2>Find Drayton</h2><div class="card"><div class="sub">Her location comes from Google Maps location sharing on her iPhone. This button opens Google Maps.</div>
+  let h=`<h2>Find Boo</h2><div class="card"><div class="sub">Her location comes from Google Maps location sharing on her iPhone. This button opens Google Maps.</div>
   <div class="actions" style="grid-template-columns:1fr"><a class="btn pri" href="${link?esc(link):"https://www.google.com/maps"}" target="_blank" rel="noopener">${link?"◎ Show Drayton now":"◎ Open Google Maps"}</a></div>
   ${link?"":`<div class="sub" style="margin-top:8px">In Google Maps, tap your profile picture, then <b>Location sharing</b>, then <b>Drayton</b>.</div>`}</div>`;
   h+=`<div class="card"><div class="k2">Her live-location link (optional)</div>${findEdit?`<div class="mform"><label class="full">Link from Drayton<input id="findLink" value="${esc(link)}" placeholder="https://maps.app.goo.gl/..."></label></div><div class="actions"><button class="btn" data-findclear="1">Clear</button><button class="btn pri" data-findsave="1">Save</button></div>`:`<div class="sub">${link?esc(link):"Not set. If Drayton shares by link (Location sharing, New share, Copy link) and texts it to you, paste it here and the button opens her straight away."}</div><div class="actions" style="grid-template-columns:1fr"><button class="btn" data-findedit="1">✎ ${link?"Change link":"Add her link"}</button></div>`}</div>`;
@@ -1012,7 +1012,7 @@ function viewFind(){const f=findGet(),link=(f.link||"").trim();
    <li>Settings, then Privacy &amp; Security: Location Services on. Low Power Mode makes updates slower.</li>
    <li>Test it at home: her dot should show with a recent time.</li></ol></details>`;
   return h}
-const VIEWS={home:["Home",viewHome,'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'],trip:["Trip",viewTrip,'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],pack:["Pack",viewPack,'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 12h6"/>'],meds:["Meds",viewMeds,'<rect x="6" y="8" width="12" height="13" rx="2"/><path d="M5 3h14v5H5zM12 11v7M8.5 14.5h7"/>'],todo:["To-do",viewTodo,'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>'],contacts:["Contacts",viewContacts,'<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>']};
+const VIEWS={home:["Home",viewHome,'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'],trip:["Trip",viewTrip,'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],pack:["Pack",viewPack,'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 12h6"/>'],meds:["Meds",viewMeds,'<rect x="6" y="8" width="12" height="13" rx="2"/><path d="M5 3h14v5H5zM12 11v7M8.5 14.5h7"/>'],todo:["To-do",viewTodo,'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>'],contacts:["Contacts",viewContacts,'<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],find:["Find Boo",viewFind,'<circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/>']};
 const INFO=["Info",viewInfo];
 let cloudOk=false;function cloudPush(){}
 applyEv();
