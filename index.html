@@ -266,7 +266,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 11:45 AM ET";
+const UPDATED="Fri Nov 20, 3:55 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -296,7 +296,7 @@ const E=[
   missing:["Dinner time, and whether to bring or make anything."]},
  {id:"ride-srq",start:"2026-11-29T15:30:00"+ET,t:"Sun afternoon · time not set",title:"Ride to SRQ airport",cat:"Transfer",status:"warn",
   addr:PLACES.srq,notes:["Flight leaves 5:31 PM. Aim to be at SRQ about 1.5 hrs before (about 4:00 PM)."],
-  missing:["Who drives you to the airport."]},
+  missing:["Tippy / Tom."]},
  {id:"aa4049b",start:"2026-11-29T17:31:00"+ET,t:"5:31 PM → 7:39 PM ET",title:"AA4049 Sarasota → Charlotte",cat:"Flight",status:"ok",
   codes:[["Confirmation","LNONWJ"]],
   lines:[["Seats","22D and 22F"],["Operated by","Envoy Air as American Eagle"]],
@@ -371,7 +371,7 @@ const CONTACTS=[
 const CONTACTS_PRIV=[];
 const MISSING=[
  "Ride to SRQ on Sun Nov 29.",
- "Ride or parking at Charleston airport, both ways."
+ null
 ];
 /* Missing-list edits saved on this phone (miss:v1): edits by id (x0..), removed ids, added items */
 let xedit=null, xdel=null;
