@@ -266,7 +266,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 4:10 PM ET";
+const UPDATED="Fri Nov 20, 4:35 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -350,7 +350,8 @@ const BEFORE=[
  ["Tue Nov 24","Pack (see the Pack tab)"],
  ["Tue Nov 24","Plan the ride or parking at Charleston airport"],
  ["Tue Nov 24","Get Tippy & Tom's address and phone numbers into the app"],
- ["Sat Nov 28, 5:31 PM","AA check-in for the flights home"]
+ ["Sat Nov 28, 5:31 PM","AA check-in for the flights home"],
+ ["Tue Nov 24","Set up Google Maps location sharing on Drayton's iPhone. Her own Google account; Maps, profile picture, Location sharing, New share, Until you turn this off, pick your Gmail. iPhone Settings: Google Maps Location Always + Precise on, Background App Refresh on, Location Services on. Test it at home (see Find Drayton on Home)."]
 ];
 const BEFORE_PRIV=[];
 /* To-do edits saved on this phone (todo:v1): edits by id, removed ids, added items */
@@ -463,7 +464,7 @@ function viewHome(){
   {const nf=E.filter(e=>FLT[e.id]).find(e=>T(e)+3*3600e3>now&&T(e)-now<36*3600e3);
    if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}<div class="sub" style="margin-top:6px">For push alerts, use the American Airlines app (trip LNONWJ).</div></div>`}
   {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
-  h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button></div>`;
+  h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
   if(inTrip){const items=list().filter(e=>dayKey(e)===tk);h+=`<h3>Today</h3><div class="list">${items.map(row).join("")||'<div class="item" style="padding:14px">Nothing scheduled.</div>'}</div>`}
   h+=`<h3>${inTrip?"Tonight":"First night · Wed Nov 25"}</h3>`+stayCard(inTrip?tk:"2026-11-25",inTrip?"Where you sleep tonight":"Where you sleep");
   if(!inTrip&&now<dep){const due=dueSoon().slice(0,3);if(due.length)h+=`<h3>To-do next</h3><div class="card">${due.map(([,d,x])=>`<div class="line"><span class="when" style="font-size:14px;min-width:84px">${esc(d)}</span><span style="text-align:left;flex:1">${esc(x)}</span></div>`).join("")}<div class="actions"><button class="btn full" data-tile="tab:todo">See all to-dos</button></div></div>`}
@@ -979,6 +980,21 @@ document.addEventListener("change",ev=>{const t=ev.target,id=t.dataset.evday||t.
   const st=String(o[id].start||e.start),day=t.dataset.evday?t.value:st.slice(0,10),tm=t.dataset.evtime?(t.value||"12:00"):st.slice(11,16),off=st.length>19?st.slice(19):DRT;
   o[id].start=day+"T"+tm+":00"+off;o[id].sortAt="";saveEv(o);if(t.dataset.evday)selDay=day;render()});
 
+/* ===== Find Drayton (Nov 20, Sven asked): opens Google Maps location sharing. The app can't show her dot itself. ===== */
+function findGet(){try{return JSON.parse(localStorage.getItem("find:v1")||"{}")||{}}catch(e){return {}}}
+let findEdit=false;
+function viewFind(){const f=findGet(),link=(f.link||"").trim();
+  let h=`<h2>Find Drayton</h2><div class="card"><div class="sub">Her location comes from Google Maps location sharing on her iPhone. This button opens Google Maps.</div>
+  <div class="actions" style="grid-template-columns:1fr"><a class="btn pri" href="${link?esc(link):"https://www.google.com/maps"}" target="_blank" rel="noopener">${link?"◎ Show Drayton now":"◎ Open Google Maps"}</a></div>
+  ${link?"":`<div class="sub" style="margin-top:8px">In Google Maps, tap your profile picture, then <b>Location sharing</b>, then <b>Drayton</b>.</div>`}</div>`;
+  h+=`<div class="card"><div class="k2">Her live-location link (optional)</div>${findEdit?`<div class="mform"><label class="full">Link from Drayton<input id="findLink" value="${esc(link)}" placeholder="https://maps.app.goo.gl/..."></label></div><div class="actions"><button class="btn" data-findclear="1">Clear</button><button class="btn pri" data-findsave="1">Save</button></div>`:`<div class="sub">${link?esc(link):"Not set. If Drayton shares by link (Location sharing, New share, Copy link) and texts it to you, paste it here and the button opens her straight away."}</div><div class="actions" style="grid-template-columns:1fr"><button class="btn" data-findedit="1">✎ ${link?"Change link":"Add her link"}</button></div>`}</div>`;
+  h+=`<details class="card"><summary><b>Set it up on her iPhone</b></summary><ol class="sub" style="padding-left:18px;margin:8px 0 0">
+   <li>Install Google Maps and sign in with her own Google account.</li>
+   <li>Tap her profile picture, then Location sharing, then New share. Choose Until you turn this off and pick your Gmail.</li>
+   <li>iPhone Settings, then Google Maps: Location <b>Always</b>, Precise Location on, Background App Refresh on.</li>
+   <li>Settings, then Privacy &amp; Security: Location Services on. Low Power Mode makes updates slower.</li>
+   <li>Test it at home: her dot should show with a recent time.</li></ol></details>`;
+  return h}
 const VIEWS={home:["Home",viewHome,'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'],trip:["Trip",viewTrip,'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],pack:["Pack",viewPack,'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 12h6"/>'],meds:["Meds",viewMeds,'<rect x="6" y="8" width="12" height="13" rx="2"/><path d="M5 3h14v5H5zM12 11v7M8.5 14.5h7"/>'],todo:["To-do",viewTodo,'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>'],contacts:["Contacts",viewContacts,'<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>']};
 const INFO=["Info",viewInfo];
 let cloudOk=false;function cloudPush(){}
@@ -989,7 +1005,7 @@ function render(){cloudPush();
   const db=document.getElementById("daybar");
   db.hidden=false;
   db.innerHTML=`<button class="dchip" data-day="all" aria-current="${tab==="trip"&&selDay==="all"}">All days</button>`+DKEYS.map(k=>{const [w,d]=DAYS[k];return `<button class="dchip ${k===tk?"istoday":""}" data-day="${k}" aria-current="${tab==="trip"&&k===selDay}"><span class="dw">${w}</span>${d.split(" ")[1]}</button>`}).join("");
-  document.getElementById("app").innerHTML=(tab==="info"?viewInfo:tab==="map"?viewMap:tab==="codes"?viewCodes:VIEWS[tab][1])();
+  document.getElementById("app").innerHTML=(tab==="info"?viewInfo:tab==="map"?viewMap:tab==="find"?viewFind:tab==="codes"?viewCodes:VIEWS[tab][1])();
   const cur=db.querySelector('[aria-current="true"]');if(cur&&!db.hidden)cur.scrollIntoView({block:"nearest",inline:"center"});
   if(tab!=="home")backStep();
 }
@@ -1020,6 +1036,8 @@ const jump=id=>{const el=document.getElementById(id);if(el)el.scrollIntoView({bl
 document.addEventListener("click",async ev=>{
   const t=ev.target.closest("button,img,[data-drop]");if(!t)return;
   if(t.dataset.cfold!==undefined){codeFolder=t.dataset.cfold||null;render();scrollTo(0,0);return}
+  if(t.dataset.findedit){findEdit=true;render();const x=document.getElementById("findLink");if(x)x.focus();return}
+  if(t.dataset.findsave||t.dataset.findclear){const x=document.getElementById("findLink");const v=t.dataset.findclear?"":((x&&x.value)||"").trim();if(v&&!/^https:\/\//.test(v)){x.setCustomValidity("Paste a link that starts with https://");x.reportValidity();return}try{localStorage.setItem("find:v1",JSON.stringify({link:v}))}catch(e){}findEdit=false;render();return}
   if(t.dataset.pfilt){pfilt=t.dataset.pfilt;render();return}
   if(t.dataset.pedit){pedit=pedit===t.dataset.pedit?null:t.dataset.pedit;pdel=null;render();return}
   if(t.dataset.pdone){pedit=null;pdel=null;render();return}
