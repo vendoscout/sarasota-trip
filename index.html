@@ -256,6 +256,18 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 .dot.warn{background:var(--warn)}
 .legend{color:var(--muted)}
 
+.seatbox{background:var(--sun-soft);border-radius:12px;padding:10px 12px;margin:8px 0}
+.seatbox .sl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.seatbox .sv{font-size:30px;font-weight:800;color:var(--sea);font-variant-numeric:tabular-nums;line-height:1.15}
+.seatbox .sc{font-weight:700;font-size:15px}
+.seatbox .su{font-size:13px;color:var(--warn);margin-top:4px}
+.rseat{display:inline-block;margin-top:4px;font-size:13px;font-weight:700;color:var(--sea);background:var(--sun-soft);border-radius:999px;padding:2px 9px}
+.seatln{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.seatln:first-child{border-top:0}
+.seatln .sr{text-align:right;white-space:nowrap}
+.seatln .sr b{display:block;font-size:19px;color:var(--sea);font-variant-numeric:tabular-nums}
+.seatln .sr small{color:var(--muted);font-size:12px}
+.seatln .su{color:var(--warn)}
 </style>
 
 <header class="top"><div class="row"><div class="brand">Sarasota · Nov 25–29</div><div class="clock" id="clock"></div></div><div class="daybar" id="daybar" aria-label="Jump to day"></div></header>
@@ -266,7 +278,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 6:20 PM ET";
+const UPDATED="Fri Nov 20, 6:30 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -400,10 +412,14 @@ const STW={ok:"Confirmed",warn:"Check",bad:"Action needed"};
 function chip(e){const m={ok:["Confirmed","c-ok"],warn:["Check","c-warn"],bad:["Action needed","c-bad"]}[e.status]||["",""];
   return `<div class="chips"><span class="chip c-cat">${esc(e.cat)}</span>${m[0]?`<span class="chip ${m[1]}">${m[0]}</span>`:""}${e.private?'<span class="chip c-priv">Private</span>':""}${e.ticket?(S.get("img:"+e.id)?'<span class="chip c-ok">Code saved</span>':'<span class="chip c-warn">Ticket pending</span>'):""}</div>`}
 function codeRow(l,v){return `<div class="code"><div class="txt"><div class="lbl">${esc(l)}</div><div class="val">${esc(v)}</div></div><button class="btn copy" data-copy="${esc(v)}">Copy</button></div>`}
+/* Seats (Nov 20): big seat box on flights, seat pill on rows, "Your seats" card on Home; reads the Seats/Upgrade lines (phone edits included) */
+function seatOf(e){const l=(e.lines||[]).find(x=>x[0]==="Seats");if(!l||!String(l[1]).trim())return null;const p=String(l[1]).split(" · ");const u=(e.lines||[]).find(x=>x[0]==="Upgrade");return {st:p[0].replace(/ and /g," · "),cab:p.slice(1).join(" · "),up:u?String(u[1]):""}}
+function seatBox(e){const x=seatOf(e);if(!x)return "";return `<div class="seatbox"><div class="sl">Seats</div><div class="sv">${esc(x.st)}</div>${x.cab?`<div class="sc">${esc(x.cab)}</div>`:""}${x.up?`<div class="su">${esc(x.up)}</div>`:""}</div>`}
+function seatsCard(){const f=list().filter(e=>seatOf(e));if(!f.length)return "";return `<h3>Your seats</h3><div class="card">${f.map(e=>{const x=seatOf(e),d=DAYS[dayKey(e)]||["",""];return `<div class="seatln"><span><span class="sub">${esc(d[0]+" "+d[1])} · ${esc(e.t.split(" → ")[0])}</span><br><b>${esc(e.title)}</b></span><span class="sr"><b>${esc(x.st)}</b><small class="${x.up?"su":""}">${esc(x.cab)}${x.up?" · upgrade requested":""}</small></span></div>`}).join("")}</div>`}
 function body(e){
-  let h=`<div class="when">${esc(e.t)}</div>${chip(e)}`;
+  let h=`<div class="when">${esc(e.t)}</div>${chip(e)}`+seatBox(e);
   (e.codes||[]).forEach(([l,v])=>h+=codeRow(l,v));
-  if(e.lines)h+=`<div>${e.lines.map(([a,b])=>`<div class="line"><span class="sub">${esc(a)}</span><span>${esc(b)}</span></div>`).join("")}</div>`;
+  if(e.lines)h+=`<div>${e.lines.filter(([a])=>!(seatOf(e)&&(a==="Seats"||a==="Upgrade"))).map(([a,b])=>`<div class="line"><span class="sub">${esc(a)}</span><span>${esc(b)}</span></div>`).join("")}</div>`;
   if(e.clash)h+=`<div class="missing"><b>Clash</b><br>${esc(e.clash)}</div>`;
   if(e.notes)h+=`<ul class="notes">${e.notes.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`;
   if(e.missing)h+=`<div class="missing"><b>Missing</b><br>${e.missing.map(esc).join("<br>")}</div>`;
@@ -426,7 +442,7 @@ function row(e){
   const o=open.has(e.id), past=Date.now()>T(e)+3*3600e3, [t,sub]=short(e);
   const extra=[e.cat,STW[e.status]];if(e.ticket&&!S.get("img:"+e.id))extra.push("ticket pending");
   return `<div class="item ${o?"open":""} ${past?"past":""} ${e.private?"private":""}" id="c-${e.id}">
-  <button class="rowbtn" data-open="${e.id}" aria-expanded="${o}"><span class="rt">${esc(t)}${sub?`<small>${esc(sub)}</small>`:""}</span><span class="rm"><span class="rtitle">${esc(e.title)}</span><span class="rsub">${esc(extra.join(" · "))}</span></span><span class="dot ${e.status}"></span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button class="rowbtn" data-open="${e.id}" aria-expanded="${o}"><span class="rt">${esc(t)}${sub?`<small>${esc(sub)}</small>`:""}</span><span class="rm"><span class="rtitle">${esc(e.title)}</span><span class="rsub">${esc(extra.join(" · "))}</span>${(x=>x?`<span class="rseat">Seats ${esc(x.st)}${x.cab?" · "+esc(x.cab):""}${x.up?" · upgrade requested":""}</span>`:"")(seatOf(e))}</span><span class="dot ${e.status}"></span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
   ${o?`<div class="rbody">${body(e)}</div>`:""}</div>`;
 }
 function ticketBlock(e){
@@ -465,6 +481,7 @@ function viewHome(){
    if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}<div class="sub" style="margin-top:6px">For push alerts, use the American Airlines app (trip LNONWJ).</div></div>`}
   {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
   h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
+  h+=seatsCard();
   if(inTrip){const items=list().filter(e=>dayKey(e)===tk);h+=`<h3>Today</h3><div class="list">${items.map(row).join("")||'<div class="item" style="padding:14px">Nothing scheduled.</div>'}</div>`}
   h+=`<h3>${inTrip?"Tonight":"First night · Wed Nov 25"}</h3>`+stayCard(inTrip?tk:"2026-11-25",inTrip?"Where you sleep tonight":"Where you sleep");
   if(!inTrip&&now<dep){const due=dueSoon().slice(0,3);if(due.length)h+=`<h3>To-do next</h3><div class="card">${due.map(([,d,x])=>`<div class="line"><span class="when" style="font-size:14px;min-width:84px">${esc(d)}</span><span style="text-align:left;flex:1">${esc(x)}</span></div>`).join("")}<div class="actions"><button class="btn full" data-tile="tab:todo">See all to-dos</button></div></div>`}
