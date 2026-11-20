@@ -266,7 +266,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 4:35 PM ET";
+const UPDATED="Fri Nov 20, 6:20 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -278,12 +278,12 @@ const PLACES={
 const E=[
  {id:"aa5627",start:"2026-11-25T11:07:00"+ET,t:"11:07 AM → 12:28 PM ET",title:"AA5627 Charleston → Charlotte",cat:"Flight",status:"ok",
   codes:[["Confirmation","LNONWJ"],["Sven ticket #","0012394210148"],["Drayton ticket #","0012394210149"]],
-  lines:[["Seats","10F and 9F · Main Cabin Extra"],["Operated by","PSA Airlines as American Eagle"],["Bags","1st checked bag free, 2nd $60 at the airport ($55 online)"]],
+  lines:[["Seats","1D and 1F · First"],["Operated by","PSA Airlines as American Eagle"],["Aircraft","CRJ900"],["Bags","1st checked bag free, 2nd $60 at the airport ($55 online)"]],
   addr:PLACES.chs,notes:["Check in on the AA app 24 hrs before: Tue Nov 24, 11:07 AM.","Gates can change. Check the AA app on the way."],
   ticket:{wait:"Mobile boarding passes (Sven + Drayton). Issued at AA check-in, Tue Nov 24 from 11:07 AM.",ref:"LNONWJ",prov:"American Airlines"}},
  {id:"aa4049a",start:"2026-11-25T15:04:00"+ET,t:"3:04 PM → 5:01 PM ET",title:"AA4049 Charlotte → Sarasota",cat:"Flight",status:"ok",
   codes:[["Confirmation","LNONWJ"]],
-  lines:[["Seats","8A and 9A · Main Cabin Extra"],["Operated by","Envoy Air as American Eagle"],["Layover","2 hrs 36 min in Charlotte"]],
+  lines:[["Seats","1D and 1F · First"],["Operated by","Envoy Air as American Eagle"],["Aircraft","Embraer 175"],["Layover","2 hrs 36 min in Charlotte"]],
   addr:PLACES.clt,notes:["Gates can change. Check the AA app when you land in Charlotte."],
   ticket:{wait:"Mobile boarding passes, from AA check-in.",ref:"LNONWJ",prov:"American Airlines"}},
  {id:"pickup",start:"2026-11-25T17:01:00"+ET,sortAt:"2026-11-25T17:05:00"+ET,t:"After landing ~5:01 PM",title:"Tippy & Tom pick you up at SRQ",cat:"Transfer",status:"ok",
@@ -299,12 +299,12 @@ const E=[
   addr:PLACES.srq,notes:["Flight leaves 5:31 PM. Aim to be at SRQ about 1.5 hrs before (about 4:00 PM)."]},
  {id:"aa4049b",start:"2026-11-29T17:31:00"+ET,t:"5:31 PM → 7:39 PM ET",title:"AA4049 Sarasota → Charlotte",cat:"Flight",status:"ok",
   codes:[["Confirmation","LNONWJ"]],
-  lines:[["Seats","22D and 22F"],["Operated by","Envoy Air as American Eagle"]],
+  lines:[["Seats","22D and 22F · Main Cabin"],["Upgrade","Complimentary upgrade to First requested, not confirmed yet (waitlist)"],["Operated by","Envoy Air as American Eagle"]],
   addr:PLACES.srq,notes:["Check in on the AA app 24 hrs before: Sat Nov 28, 5:31 PM."],
   ticket:{wait:"Mobile boarding passes, from AA check-in Sat Nov 28 at 5:31 PM.",ref:"LNONWJ",prov:"American Airlines"}},
  {id:"aa3201",start:"2026-11-29T20:46:00"+ET,t:"8:46 PM → 9:56 PM ET",title:"AA3201 Charlotte → Charleston",cat:"Flight",status:"ok",
   codes:[["Confirmation","LNONWJ"]],
-  lines:[["Seats","12B and 12C"],["Layover","1 hr 7 min in Charlotte. Watch the AA app if the first flight runs late"]],
+  lines:[["Seats","1E and 1F · First"],["Layover","1 hr 7 min in Charlotte. Watch the AA app if the first flight runs late"]],
   addr:PLACES.clt,
   ticket:{wait:"Mobile boarding passes, from AA check-in.",ref:"LNONWJ",prov:"American Airlines"}}
 ];
@@ -613,7 +613,7 @@ function viewMap(){
   h+=`<div class="card"><div class="k2">Before you fly</div><div class="sub">In the Google Maps app, tap your profile picture, then <b>Offline maps</b> → <b>Select your own map</b>, and cover Sarasota. Search and directions then work without data.</div></div>`;
   return h;
 }
-const INFO1=[["Flights","LNONWJ · American Airlines"],["Sven AAdvantage","Gold"],["Bags","1st checked bag free each · 2nd $60 at airport, $55 online"],["Time zone","Same as Charleston (ET)"]];
+const INFO1=[["Flights","LNONWJ · American Airlines · ticketed Nov 17, 2026"],["Sven AAdvantage","Gold"],["Bags","1st checked bag free each · 2nd $60 at airport, $55 online"],["Time zone","Same as Charleston (ET)"]];
 const INFO2=[];
 const INFO2N=[];
 function infoRows(L,base){return leList(L,base.map(([l,v],i)=>({id:"r"+i,l,v}))).map(x=>leRow(L,x,[["l","Label"],["v","Value",1]],`<div class="line"><span class="sub">${esc(x.l)}</span><span${/^missing$/i.test(String(x.v).trim())?' style="color:var(--bad);font-weight:700"':""}>${esc(x.v)}</span></div>`)).join("")}
