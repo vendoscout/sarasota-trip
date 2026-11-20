@@ -1,6 +1,6 @@
 {
- "name": "Sarasota Trip Pocket",
- "short_name": "Sarasota",
+ "name": "TripPocket",
+ "short_name": "TripPocket",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
