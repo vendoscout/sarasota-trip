@@ -299,7 +299,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Sat Nov 21, 9:48 AM ET";
+const UPDATED="Sat Nov 21, 9:50 AM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -524,12 +524,12 @@ function dueSoon(){const tk=todayKey(), all=todoList().filter(x=>!x.done&&(x.d||
 const DEP=new Date("2026-11-25T11:07:00"+ET).getTime();
 function cdText(ms){if(ms<=0)return "Wheels up!";const p=n=>String(n).padStart(2,"0");return `${Math.floor(ms/864e5)}d ${p(Math.floor(ms%864e5/36e5))}h ${p(Math.floor(ms%36e5/6e4))}m ${p(Math.floor(ms%6e4/1e3))}s`}
 setInterval(()=>{const el=document.getElementById("cd");if(el)el.textContent=cdText(DEP-Date.now())},1000);
-/* Weather (Nov 21, Sven asked): forecast card on Home for Tippy & Tom's (Rotonda West), filled in by Claude from weather.gov on each update; rows editable on the phone (info:v1 under "info.wx"); MyRadar button opens his MyRadar app (Android intent, Play Store fallback; App Store page on iPhone) */
+/* Weather (Nov 21, Sven asked): forecast card on Home for Tippy & Tom's (Rotonda West), filled in by Claude from weather.gov on each update; rows editable on the phone (info:v1 under "info.wx"); MyRadar tile on Home (between Contacts and Info) opens his MyRadar app (Android intent, Play Store fallback; App Store page on iPhone) */
 const WX=[["Wed Nov 25","76° / 64°","Partly sunny, isolated showers","20%"],["Thu Nov 26","74° / 60°","Mostly sunny",""],["Fri Nov 27","73°","Partly sunny",""],["Sat Nov 28","","Forecast not out yet",""],["Sun Nov 29","","Forecast not out yet",""]];
 const WXAT="Sat Nov 21, 9:35 AM ET · weather.gov";
 function radarUrl(){return /Android/i.test(navigator.userAgent)?"intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.acmeaom.android.myradar;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.acmeaom.android.myradar;end":"https://apps.apple.com/us/app/myradar-weather-radar/id322439990"}
 function wxCard(){const tk=todayKey();const r=leList("info.wx",WX.map(([d,t,sky,rn],i)=>({id:"w"+i,d,t,sky,rn})));
-  return `<h3>Weather · Rotonda West</h3><div class="card">${r.map(x=>{const on=DAYS[tk]&&(DAYS[tk][0]+" "+DAYS[tk][1])===x.d;return leRow("info.wx",x,[["d","Day"],["t","High / low"],["sky","Sky",1],["rn","Rain chance"]],`<div class="line"${on?' style="font-weight:700"':""}><span class="sub" style="min-width:84px">${esc(x.d)}</span><span style="flex:1;text-align:left">${esc(x.sky)}${x.rn?` · ${esc(x.rn)} rain`:""}</span><span style="font-weight:700">${esc(x.t)}</span></div>`)}).join("")}${leAddBtn("info.wx","Add a day")}<div class="sub" style="margin-top:6px">${esc(WXAT)}</div><div class="actions" style="grid-template-columns:1fr"><a class="btn pri" href="${radarUrl()}"${/Android/i.test(navigator.userAgent)?"":' target="_blank" rel="noopener"'}>MyRadar ↗</a></div></div>`}
+  return `<h3>Weather · Rotonda West</h3><div class="card">${r.map(x=>{const on=DAYS[tk]&&(DAYS[tk][0]+" "+DAYS[tk][1])===x.d;return leRow("info.wx",x,[["d","Day"],["t","High / low"],["sky","Sky",1],["rn","Rain chance"]],`<div class="line"${on?' style="font-weight:700"':""}><span class="sub" style="min-width:84px">${esc(x.d)}</span><span style="flex:1;text-align:left">${esc(x.sky)}${x.rn?` · ${esc(x.rn)} rain`:""}</span><span style="font-weight:700">${esc(x.t)}</span></div>`)}).join("")}${leAddBtn("info.wx","Add a day")}<div class="sub" style="margin-top:6px">${esc(WXAT)}</div></div>`}
 function viewHome(){
   const now=Date.now(), dep=new Date("2026-11-25T11:07:00"+ET).getTime(), tk=todayKey(), inTrip=!!DAYS[tk]&&tk>="2026-11-25";
   let h="";
@@ -537,7 +537,7 @@ function viewHome(){
   else if(inTrip){const i=TRIPK.indexOf(tk)+1;h+=`<div class="hero"><div><div class="k2">Day ${i} of 5</div><div class="countdown">${DAYS[tk][0]} ${DAYS[tk][1]}</div><div class="sub">${esc(DAYS[tk][2])}</div></div></div>`}
   h+=`<div class="sub" style="text-align:center;margin-top:10px">Updated ${esc(UPDATED)}</div>`;
   h+=nextBar();
-  {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
+  {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["radar","MyRadar","☁"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>k==="radar"?`<a class="tile" style="text-decoration:none" href="${radarUrl()}"${/Android/i.test(navigator.userAgent)?"":' target="_blank" rel="noopener"'}><span class="ti" aria-hidden="true">${ic}</span><span>${l}</span></a>`:`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
   h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
   h+=wxCard();
   h+=seatsCard();
