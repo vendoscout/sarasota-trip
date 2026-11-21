@@ -282,7 +282,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:25 PM ET";
+const UPDATED="Fri Nov 20, 9:35 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -520,6 +520,7 @@ function viewTrip(){
 }
 const FOLDERS=[
  {k:"flights",l:"Flights",ic:"✈",codes:[["Confirmation","LNONWJ"],["Sven ticket #","0012394210148"],["Drayton ticket #","0012394210149"]],items:["aa5627","aa4049a","aa4049b","aa3201"],note:"Boarding passes come at AA check-in (Tue Nov 24, 11:07 AM, and Sat Nov 28, 5:31 PM). Add them to each flight below."},
+ {k:"lounge",l:"Lounge passes",ic:"☕",codes:[],items:[],note:"Add each lounge pass here: a screenshot of the pass (QR or barcode) and any pass number. Tap a pass to show it full screen at the lounge desk."},
  {k:"meds",l:"Meds",ic:"℞",codes:[],items:[],note:"Sven's medicines, doses and bottle photos."}
 ];
 let codeFolder=null;
@@ -558,6 +559,7 @@ function viewCodes(){
    const NL="fnote."+f.k,nl=leList(NL,f.note?[{id:"n0",t:f.note}]:[]);
    h+=nl.map(x=>leRow(NL,x,[["t","Note",1]],`<p class="lead" style="margin:8px 0">${esc(x.t)}</p>`)).join("")+(nl.length?"":leAddBtn(NL,"Add a note"));}
   if(f.k==="meds")h+=medsBlock();
+  if(f.k==="lounge")h+=loungeBlock();
   if(f.k==="ids")h+=idsBlock();
   if(f.qr)h+=`<div class="card">${f.qr.map(([l,k])=>qrBlock(l,k)).join("")}</div>`;
   (f.items||[]).forEach(id=>{const e=E.find(x=>x.id===id);if(!e||!e.ticket)return;h+=`<div class="card"><div class="title" style="font-size:16px">${esc(e.title)}</div>${ticketBlock({...e,qr:null})}</div>`});
@@ -593,6 +595,15 @@ function medsBlock(){const ids=medIds();
   h+=`<div class="actions"><label class="btn ${ids.length?"":"pri"} full" for="medFile">+ Add photo</label></div><input type="file" accept="image/*" multiple id="medFile" hidden>`;
   h+=`<h3>At the airport</h3><div class="card">${leList("medtxt.cust",MCUST.map((t,i)=>({id:"k"+i,t}))).map(x=>leRow("medtxt.cust",x,[["t","Line",1]],`<div style="padding:4px 0">• ${esc(x.t)}</div>`)).join("")}${leAddBtn("medtxt.cust","Add a line")}</div>`;
   return h}
+/* Lounge passes (Nov 20, Sven asked): Codes > Lounge passes; pass screenshots saved on this phone (img:lng-*, list lounge:v1), name per pass in note:lng-* */
+function lngIds(){try{return (JSON.parse(S.get("lounge:v1")||"[]")).filter(id=>S.get("img:"+id))}catch(e){return []}}
+function loungeBlock(){const ids=lngIds();let h=`<h3>Pass screenshots</h3><p class="lead">Screenshots saved on this phone only.</p>`;
+  ids.forEach((id,i)=>{const n=S.get("note:"+id)||"";h+=`<div class="card"><img src="${S.get("img:"+id)}" alt="Lounge pass ${i+1}" data-lngshow="${id}" style="display:block;width:100%;border-radius:8px"><textarea data-note="${id}" placeholder="Which lounge / which flight (optional)" style="min-height:44px">${esc(n)}</textarea><div class="actions"><button class="btn pri" data-lngshow="${id}">Show to scan</button><button class="btn" data-rm="${id}">Remove</button></div></div>`});
+  if(!ids.length)h+=`<div class="card"><div class="sub">No passes yet.</div></div>`;
+  h+=`<div class="actions"><label class="btn ${ids.length?"":"pri"} full" for="lngFile">+ Add a pass screenshot</label></div><input type="file" accept="image/*" multiple id="lngFile" hidden>`;
+  return h}
+function addLounge(files){[...files||[]].forEach((f,i)=>{const id="lng-"+Date.now()+"-"+i;let l=[];try{l=JSON.parse(S.get("lounge:v1")||"[]")}catch(e){}l.push(id);S.set("lounge:v1",JSON.stringify(l));saveImg(id,f)})}
+document.addEventListener("change",ev=>{if(ev.target.id==="lngFile"){addLounge(ev.target.files);ev.target.value=""}});
 function addMeds(files){[...files||[]].forEach((f,i)=>{const id="med-"+Date.now()+"-"+i;let l=[];try{l=JSON.parse(S.get("meds:v1")||"[]")}catch(e){}l.push(id);S.set("meds:v1",JSON.stringify(l));saveImg(id,f)})}
 document.addEventListener("change",ev=>{if(ev.target.id==="medFile"){addMeds(ev.target.files);ev.target.value=""}});
 function viewTodo(){
@@ -1088,11 +1099,12 @@ document.addEventListener("click",async ev=>{
   if(t.closest("#scan")&&t.tagName==="IMG")return;
   if(t.dataset.scanq){const k=t.dataset.scanq;openScan("q:"+k,{id:"q:"+k,l:t.dataset.lbl,src:QR[k]});return}
   if(t.dataset.idshow){scanPhoto=true;deck=ID_L.filter(([k])=>ID_IMG[k]).map(([k,l])=>({id:"id:"+k,l,src:ID_IMG[k]}));di=Math.max(0,deck.findIndex(x=>x.id==="id:"+t.dataset.idshow));if(!deck.length)return;showScan();document.getElementById("scan").hidden=false;backStep();try{window._wl=await navigator.wakeLock.request("screen")}catch(e){}return}
+  if(t.dataset.lngshow){scanPhoto=true;deck=lngIds().map((id,i)=>({id,l:S.get("note:"+id)||"Lounge pass "+(i+1),src:S.get("img:"+id)}));di=Math.max(0,deck.findIndex(x=>x.id===t.dataset.lngshow));if(!deck.length)return;showScan();document.getElementById("scan").hidden=false;backStep();try{window._wl=await navigator.wakeLock.request("screen")}catch(e){}return}
   if(t.dataset.medshow){scanPhoto=true;deck=[{id:"letter",l:"MUSC doctor letter · Nov 5, 2026",src:RX_LETTER}].concat(rxList().map(x=>[x.id,x.n||"",x.st||""]).flatMap(([k,n,st])=>(RX_IMG[k]?[{id:"rx:"+k,l:n+" · "+st+" · bottle",src:RX_IMG[k]}]:[]).concat((RX_PILL[k]||[]).map((src,i)=>({id:"rxp:"+k+":"+i,l:n+" · "+st+" · pills",src}))).concat(S.get("img:pill-"+k)?[{id:"rxm:"+k,l:n+" · "+st+" · pills",src:S.get("img:pill-"+k)}]:[]))).concat(medIds().map((id,i)=>({id,l:S.get("note:"+id)||"Extra photo "+(i+1),src:S.get("img:"+id)})));di=Math.max(0,deck.findIndex(x=>x.id===t.dataset.medshow));if(!deck.length)return;showScan();document.getElementById("scan").hidden=false;backStep();try{window._wl=await navigator.wakeLock.request("screen")}catch(e){}return}
   if(t.dataset.scan){const e=E.find(x=>x.id===t.dataset.scan);openScan("s:"+e.id,{id:"s:"+e.id,l:e.title,src:S.get("img:"+e.id)});return}
   if(t.id==="closeScan"){document.getElementById("scan").hidden=true;try{window._wl&&window._wl.release()}catch(e){}return}
   if(t.dataset.rm){const box=t.parentElement;box.innerHTML=`<button class="btn" data-rmyes="${t.dataset.rm}" style="background:var(--bad);color:#fff;border-color:var(--bad)">Yes, remove</button><button class="btn" data-rmno="1">Keep it</button>`;return}
-  if(t.dataset.rmyes){S.del("img:"+t.dataset.rmyes);if(t.dataset.rmyes.startsWith("med-"))S.del("note:"+t.dataset.rmyes);render();return}
+  if(t.dataset.rmyes){S.del("img:"+t.dataset.rmyes);if(t.dataset.rmyes.startsWith("med-")||t.dataset.rmyes.startsWith("lng-"))S.del("note:"+t.dataset.rmyes);render();return}
   if(t.dataset.rmno){render();return}
   if(t.id==="clearAll"){document.getElementById("clearConfirm").innerHTML=`<div class="actions"><button class="btn" id="clearYes" style="background:var(--bad);color:#fff;border-color:var(--bad)">Clear everything</button><button class="btn" data-rmno="1">Cancel</button></div>`;return}
   if(t.id==="clearYes"){try{Object.keys(localStorage).filter(k=>/^(img|note|pack|money|hist|booked|meds):/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}render();return}
