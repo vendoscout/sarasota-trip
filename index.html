@@ -257,6 +257,14 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 .legend{color:var(--muted)}
 
 .landbox{background:var(--ok-soft)}
+.fprog{margin:10px 0 4px}
+.fpt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.fpl{font-size:18px;color:var(--sea);font-variant-numeric:tabular-nums}
+.fptrack{position:relative;height:10px;border-radius:999px;background:var(--line);margin:14px 12px 8px}
+.fpfill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sea);transition:width 1s linear}
+.fpplane{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:26px;line-height:1;color:var(--sea);background:#fff;border-radius:50%;padding:2px 4px;box-shadow:0 1px 6px rgba(22,115,201,.3);transition:left 1s linear}
+.fpends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);line-height:1.3}
+.fpends b{color:var(--ink);font-size:14px}
 .fucard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(22,115,201,.16);padding:14px;margin:10px 0 14px;border-top:5px solid var(--sea)}
 .fuhd{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .fubig{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -291,7 +299,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:50 PM ET";
+const UPDATED="Fri Nov 20, 9:35 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -372,6 +380,17 @@ function arrOf(e){return String(e.t).split(" → ")[1]||""}
 const FOCUS=null; // guest copies may list the flights that matter most to them
 function arrMs(e){const a=arrOf(e).replace(" ET","").trim(),m=a.match(/(\d+):(\d+)\s*(AM|PM)/);if(!m)return T(e)+3*36e5;let h=+m[1]%12+(m[3]==="PM"?12:0);const d=new Date(T(e));const x=new Date(String(e.start).slice(0,10)+"T"+String(h).padStart(2,"0")+":"+m[2]+":00"+ET).getTime();return x<T(e)?x+864e5:x}
 function depOf(e){return String(e.t).split(" → ")[0].replace(" ET","")}
+/* Flight progress bar (Nov 20, Sven asked): opened flight shows a bar from origin to destination, a plane that moves along it, highlighted trail and a live timer; uses FSTAT dep/arr when updated. Sits right above the seat box. */
+function tOn(e,str){const m=String(str||"").match(/(\d+):(\d+)\s*(AM|PM)/);if(!m)return null;const h=+m[1]%12+(m[3]==="PM"?12:0);return new Date(String(e.start).slice(0,10)+"T"+String(h).padStart(2,"0")+":"+m[2]+":00"+ET).getTime()}
+function fTimes(e){const F=fStat(e);const d=tOn(e,F.dep||depOf(e))||T(e);let a=tOn(e,F.arr||arrOf(e));if(!a)a=d+2*36e5;if(a<=d)a+=864e5;return [d,a]}
+function hms(ms){ms=Math.max(0,ms);const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),x=Math.floor(ms%6e4/1e3);return (d?d+"d ":"")+(d||h?h+"h ":"")+m+"m "+String(x).padStart(2,"0")+"s"}
+function progState(e){const [d,a]=fTimes(e),now=Date.now(),F=fStat(e);if(/cancel/i.test(F.st||""))return {p:0,t:"Cancelled",sub:""};
+  if(now<d)return {p:0,t:"Departs in "+hms(d-now),sub:"Not in the air yet"};
+  if(now<a)return {p:(now-d)/(a-d),t:"Lands in "+hms(a-now),sub:"In the air "+hms(now-d).replace(/ \d+s$/,"")};
+  return {p:1,t:/land/i.test(F.st||"")||now>a?"Landed":"Arriving",sub:"Scheduled landing passed "+hms(now-a).replace(/ \d+s$/,"")+" ago"}}
+function progBar(e){if(!FLT[e.id])return "";const m=String(e.title).match(/^\S+\s+(.+?)\s+→\s+(.+)$/),fr=m?m[1]:"",to=m?m[2]:"",x=progState(e),pc=(x.p*100).toFixed(1);
+  return `<div class="fprog" data-fprog="${e.id}"><div class="fpt"><b class="fpl">${esc(x.t)}</b><span class="sub fps">${esc(x.sub)}</span></div><div class="fptrack"><div class="fpfill" style="width:${pc}%"></div><span class="fpplane" style="left:${pc}%">✈</span></div><div class="fpends"><span><b>${esc(fr)}</b><br>${esc(fStat(e).dep||depOf(e))}</span><span style="text-align:right"><b>${esc(to)}</b><br>${esc((fStat(e).arr||arrOf(e)).replace(" ET",""))}</span></div></div>`}
+setInterval(()=>{document.querySelectorAll("[data-fprog]").forEach(el=>{const e=list().find(x=>x.id===el.dataset.fprog);if(!e)return;const x=progState(e),pc=(x.p*100).toFixed(1)+"%";el.querySelector(".fpl").textContent=x.t;el.querySelector(".fps").textContent=x.sub;el.querySelector(".fpfill").style.width=pc;el.querySelector(".fpplane").style.left=pc})},1000);
 function fStat(e){return FSTAT[e.id]||{}}
 function stCls(t){t=t||"";return /cancel/i.test(t)?"c-bad":/delay|late|divert|change/i.test(t)?"c-warn":/on time|board|in the air|depart|land|arriv/i.test(t)?"c-ok":"c-cat"}
 function stChipF(e){const F=fStat(e),t=F.st||"Scheduled";return `<span class="chip ${stCls(t)}">${esc(t)}</span>`}
@@ -452,7 +471,7 @@ function seatOf(e){const l=(e.lines||[]).find(x=>x[0]==="Seats");if(!l||!String(
 function seatBox(e){const x=seatOf(e);if(!x)return "";return `<div class="seatbox"><div class="sl">Seats</div><div class="sv">${esc(x.st)}</div>${x.cab?`<div class="sc">${esc(x.cab)}</div>`:""}${x.up?`<div class="su">${esc(x.up)}</div>`:""}</div>`}
 function seatsCard(){const f=list().filter(e=>seatOf(e));if(!f.length)return "";return `<h3>Your seats</h3><div class="card">${f.map(e=>{const x=seatOf(e),d=DAYS[dayKey(e)]||["",""];return `<div class="seatln"><span><span class="sub">${esc(d[0]+" "+d[1])} · ${esc(e.t.split(" → ")[0])}</span><br><b>${esc(e.title)}</b></span><span class="sr"><b>${esc(x.st)}</b><small class="${x.up?"su":""}">${esc(x.cab)}${x.up?" · upgrade requested":""}</small></span></div>`}).join("")}</div>`}
 function body(e){
-  let h=`<div class="when">${esc(e.t)}</div>${chip(e)}`+seatBox(e)+landBox(e);
+  let h=`<div class="when">${esc(e.t)}</div>${chip(e)}`+progBar(e)+seatBox(e)+landBox(e);
   (e.codes||[]).forEach(([l,v])=>h+=codeRow(l,v));
   if(e.lines)h+=`<div>${e.lines.filter(([a])=>!(seatOf(e)&&(a==="Seats"||a==="Upgrade"))).map(([a,b])=>`<div class="line"><span class="sub">${esc(a)}</span><span>${esc(b)}</span></div>`).join("")}</div>`;
   if(e.clash)h+=`<div class="missing"><b>Clash</b><br>${esc(e.clash)}</div>`;
