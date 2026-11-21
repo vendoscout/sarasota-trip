@@ -258,11 +258,11 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 
 .landbox{background:var(--ok-soft)}
 .fprog{margin:10px 0 4px}
-.fpt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
-.fpl{font-size:18px;color:var(--sea);font-variant-numeric:tabular-nums}
-.fptrack{position:relative;height:10px;border-radius:999px;background:var(--line);margin:14px 12px 8px}
-.fpfill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sea);transition:width 1s linear}
-.fpplane{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:26px;line-height:1;color:var(--sea);background:#fff;border-radius:50%;padding:2px 4px;box-shadow:0 1px 6px rgba(22,115,201,.3);transition:left 1s linear}
+.fpt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.fpl{font-size:17px;color:var(--sea);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fptrack{position:relative;height:4px;background:var(--line);margin:18px 14px 10px}
+.fpfill{position:absolute;left:0;top:0;bottom:0;background:var(--sea);transition:width 1s linear}
+.fpplane{position:absolute;top:50%;transform:translate(-50%,-52%);font-size:26px;line-height:1;color:var(--sea);pointer-events:none;transition:left 1s linear}
 .fpends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);line-height:1.3}
 .fpends b{color:var(--ink);font-size:14px}
 .fucard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(22,115,201,.16);padding:14px;margin:10px 0 14px;border-top:5px solid var(--sea)}
@@ -299,7 +299,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:45 PM ET";
+const UPDATED="Fri Nov 20, 9:50 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -403,7 +403,7 @@ function trackerCard(){const f=list().filter(e=>FLT[e.id]);if(!f.length)return "
   let h=`<div class="fucard"><div class="fuhd"><span class="k2">Flight updates</span>${stChipF(x)}</div><div class="sub">${esc(d[0]+" "+d[1])}</div><div class="title" style="margin:0 0 6px">${esc(x.title)}</div>
   <div class="fubig"><div><div class="sl">Departs</div><div class="fv">${esc(F.dep||sd)}</div>${F.dep&&F.dep!==sd?`<div class="was">was ${esc(sd)}</div>`:""}<div class="fg">${F.gate?"Gate "+esc(F.gate):"Gate not posted yet"}</div></div><div><div class="sl">Lands</div><div class="fv">${esc(F.arr||sa)}</div>${F.arr&&F.arr!==sa?`<div class="was">was ${esc(sa)}</div>`:""}<div class="fg">${F.bag?"Bags: "+esc(F.bag):F.agate?"Gate "+esc(F.agate):"Bags: not posted yet"}</div></div></div>
   ${F.note?`<div class="missing" style="margin-top:8px">${esc(F.note)}</div>`:""}<div class="fuup">${F.at?"Updated "+esc(F.at):"No changes reported yet"} · App updated ${esc(UPDATED)}</div>${fltBtns(FLT[x.id])}</div>`;
-  const o=f.filter(e=>e!==x);if(o.length)h+=`<h3>All flights</h3><div class="card">${o.map(e=>{const G=fStat(e),dd=DAYS[dayKey(e)]||["",""];return `<div class="trkln"><div class="fuhd"><span class="sub">${esc(dd[0]+" "+dd[1])}</span>${stChipF(e)}</div><b>${esc(e.title)}</b><div class="sub" style="color:var(--ink)">${esc((G.dep||depOf(e))+" → "+(G.arr||arrOf(e).replace(" ET",""))+" ET")}${G.gate?" · Gate "+esc(G.gate):""}${G.bag?" · Bags "+esc(G.bag):""}</div>${G.note?`<div class="sub">${esc(G.note)}</div>`:""}<div class="fstat"><a class="btn" href="${FA(FLT[e.id])}" target="_blank" rel="noopener">✈ Plane on a map ↗</a><a class="btn" href="${GS(FLT[e.id])}" target="_blank" rel="noopener">Google status ↗</a></div></div>`}).join("")}</div>`;
+  const o=f.filter(e=>e!==x);if(o.length)h+=`<h3>All flights</h3><div class="card">${o.map(e=>{const G=fStat(e),dd=DAYS[dayKey(e)]||["",""];return `<div class="trkln"><div class="fuhd"><span class="sub">${esc(dd[0]+" "+dd[1])}</span>${stChipF(e)}</div><b>${esc(e.title)}</b><div class="sub" style="color:var(--ink)">${esc((G.dep||depOf(e))+" → "+(G.arr||arrOf(e).replace(" ET",""))+" ET")}${G.gate?" · Gate "+esc(G.gate):""}${G.bag?" · Bags "+esc(G.bag):""}</div>${G.note?`<div class="sub">${esc(G.note)}</div>`:""}${fltBtns(FLT[e.id])}</div>`}).join("")}</div>`;
   return h}
 const LINKS={"aa5627":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049a":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049b":[["American Airlines (aa.com)","https://www.aa.com"]],"aa3201":[["American Airlines (aa.com)","https://www.aa.com"]],"srqinfo":[["SRQ airport","https://srq-airport.com"]]};
 const PACK_DEFAULT=[{"id": "p0", "text": "Sven's driver's license (TSA)", "cat": "Documents", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p1", "text": "Boarding passes in the AA app (both)", "cat": "Documents", "status": "Plan", "priv": false, "note": "Check-in opens Tue Nov 24, 11:07 AM", "packed": false}, {"id": "p2", "text": "Credit card + some cash", "cat": "Money", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p3", "text": "Decide: carry-ons only or check a bag", "cat": "Bags", "status": "Plan", "priv": false, "note": "1st checked bag is free", "packed": false}, {"id": "p4", "text": "Clothes for 4 nights (Sven)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p5", "text": "Clothes for 4 nights (Drayton)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p6", "text": "Thanksgiving outfits", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p7", "text": "Swimsuits", "cat": "Clothes", "status": "Optional", "priv": false, "note": "", "packed": false}, {"id": "p8", "text": "Sven's meds, original bottles, in carry-on", "cat": "Health", "status": "Need", "priv": false, "note": "Plus a few extra days", "packed": false}, {"id": "p9", "text": "Phone chargers + battery pack", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p10", "text": "Books for Drayton", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p11", "text": "Snacks for the Charlotte layover", "cat": "Trip day", "status": "Buy there", "priv": false, "note": "", "packed": false}];
