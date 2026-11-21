@@ -299,7 +299,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:50 PM ET";
+const UPDATED="Fri Nov 20, 9:55 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -530,10 +530,7 @@ function viewHome(){
   if(now<dep){const ms=dep-now;h+=`<div class="hero"><div><div class="k2">Wheels up from CHS</div><div class="countdown" id="cd">${cdText(ms)}</div><div class="sub">Wed Nov 25 · 11:07 AM ET · AA5627</div></div></div>`}
   else if(inTrip){const i=TRIPK.indexOf(tk)+1;h+=`<div class="hero"><div><div class="k2">Day ${i} of 5</div><div class="countdown">${DAYS[tk][0]} ${DAYS[tk][1]}</div><div class="sub">${esc(DAYS[tk][2])}</div></div></div>`}
   h+=`<div class="sub" style="text-align:center;margin-top:10px">Updated ${esc(UPDATED)}</div>`;
-  h+=trackerCard();
   h+=nextBar();
-  {const nf=E.filter(e=>FLT[e.id]).find(e=>T(e)+3*3600e3>now&&T(e)-now<36*3600e3);
-   if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}</div>`}
   {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
   h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
   h+=seatsCard();
