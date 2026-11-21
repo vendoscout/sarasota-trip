@@ -299,7 +299,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:35 PM ET";
+const UPDATED="Fri Nov 20, 9:45 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -404,7 +404,7 @@ function trackerCard(){const f=list().filter(e=>FLT[e.id]);if(!f.length)return "
   <div class="fubig"><div><div class="sl">Departs</div><div class="fv">${esc(F.dep||sd)}</div>${F.dep&&F.dep!==sd?`<div class="was">was ${esc(sd)}</div>`:""}<div class="fg">${F.gate?"Gate "+esc(F.gate):"Gate not posted yet"}</div></div><div><div class="sl">Lands</div><div class="fv">${esc(F.arr||sa)}</div>${F.arr&&F.arr!==sa?`<div class="was">was ${esc(sa)}</div>`:""}<div class="fg">${F.bag?"Bags: "+esc(F.bag):F.agate?"Gate "+esc(F.agate):"Bags: not posted yet"}</div></div></div>
   ${F.note?`<div class="missing" style="margin-top:8px">${esc(F.note)}</div>`:""}<div class="fuup">${F.at?"Updated "+esc(F.at):"No changes reported yet"} · App updated ${esc(UPDATED)}</div>${fltBtns(FLT[x.id])}</div>`;
   const o=f.filter(e=>e!==x);if(o.length)h+=`<h3>All flights</h3><div class="card">${o.map(e=>{const G=fStat(e),dd=DAYS[dayKey(e)]||["",""];return `<div class="trkln"><div class="fuhd"><span class="sub">${esc(dd[0]+" "+dd[1])}</span>${stChipF(e)}</div><b>${esc(e.title)}</b><div class="sub" style="color:var(--ink)">${esc((G.dep||depOf(e))+" → "+(G.arr||arrOf(e).replace(" ET",""))+" ET")}${G.gate?" · Gate "+esc(G.gate):""}${G.bag?" · Bags "+esc(G.bag):""}</div>${G.note?`<div class="sub">${esc(G.note)}</div>`:""}<div class="fstat"><a class="btn" href="${FA(FLT[e.id])}" target="_blank" rel="noopener">✈ Plane on a map ↗</a><a class="btn" href="${GS(FLT[e.id])}" target="_blank" rel="noopener">Google status ↗</a></div></div>`}).join("")}</div>`;
-  return h+`<div class="sub" style="text-align:center;margin:6px 0 10px">To see the newest updates, close the app and reopen it.</div>`}
+  return h}
 const LINKS={"aa5627":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049a":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049b":[["American Airlines (aa.com)","https://www.aa.com"]],"aa3201":[["American Airlines (aa.com)","https://www.aa.com"]],"srqinfo":[["SRQ airport","https://srq-airport.com"]]};
 const PACK_DEFAULT=[{"id": "p0", "text": "Sven's driver's license (TSA)", "cat": "Documents", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p1", "text": "Boarding passes in the AA app (both)", "cat": "Documents", "status": "Plan", "priv": false, "note": "Check-in opens Tue Nov 24, 11:07 AM", "packed": false}, {"id": "p2", "text": "Credit card + some cash", "cat": "Money", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p3", "text": "Decide: carry-ons only or check a bag", "cat": "Bags", "status": "Plan", "priv": false, "note": "1st checked bag is free", "packed": false}, {"id": "p4", "text": "Clothes for 4 nights (Sven)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p5", "text": "Clothes for 4 nights (Drayton)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p6", "text": "Thanksgiving outfits", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p7", "text": "Swimsuits", "cat": "Clothes", "status": "Optional", "priv": false, "note": "", "packed": false}, {"id": "p8", "text": "Sven's meds, original bottles, in carry-on", "cat": "Health", "status": "Need", "priv": false, "note": "Plus a few extra days", "packed": false}, {"id": "p9", "text": "Phone chargers + battery pack", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p10", "text": "Books for Drayton", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p11", "text": "Snacks for the Charlotte layover", "cat": "Trip day", "status": "Buy there", "priv": false, "note": "", "packed": false}];
 const QR={};
@@ -485,7 +485,7 @@ function body(e){
   const lk=LINKS[e.id]||[];if(lk.length)h+=`<div class="actions">${lk.map(([l,u])=>`<a class="btn full" href="${esc(u)}" target="_blank" rel="noopener">${esc(l)} ↗</a>`).join("")}</div>`;
   if(e.addr)h+=`<div class="sub" style="margin-top:6px">${esc(e.addr.text)}</div>`;
   if(e.phones)h+=`<div class="sub">${e.phones.map(([l,n])=>`${esc(l)}: <span style="user-select:all">${fmtPhone(n)}</span>`).join("<br>")}</div>`;
-  if(FLT[e.id])h+=`<div class="sub" style="margin-top:10px"><b>Plane on a map, gate, delays</b> · check live:</div>${fltBtns(FLT[e.id])}<div class="sub" style="margin-top:6px">Push alerts: open the American Airlines app, find trip ${"LNONWJ"} and allow notifications.</div>`;
+  if(FLT[e.id])h+=`<div class="sub" style="margin-top:10px"><b>Plane on a map, gate, delays</b> · check live:</div>${fltBtns(FLT[e.id])}`;
   h+=ticketBlock(e);
   h+=evEdit===e.id?evEditor(e):`<div class="actions"><button class="btn full" data-evedit="${e.id}">✎ Edit this item</button></div>`;
   const note=S.get("note:"+e.id)||"";
@@ -505,7 +505,7 @@ function ticketBlock(e){
   (e.qr||[]).forEach(([l,k])=>{h+=`<div class="sub" style="margin-top:8px;font-weight:700;color:var(--ink)">${esc(l)}</div><img src="${QR[k]}" alt="QR: ${esc(l)}" data-scanq="${k}" data-lbl="${esc(l)}" style="margin-top:6px;max-width:260px"><div class="actions"><button class="btn pri full" data-scanq="${k}" data-lbl="${esc(l)}">Show to scan</button></div>`});
   if(e.qr&&!e.ticket&&!img)return h+`</div>`;
   if(img)h+=`<img src="${img}" alt="Saved code for ${esc(e.title)}" data-scan="${e.id}" style="margin-top:8px"><div class="actions"><button class="btn pri" data-scan="${e.id}">Show to scan</button><button class="btn" data-rm="${e.id}">Remove</button></div>`;
-  else h+=`<div class="actions"><label class="btn full" for="f-${e.id}">Add photo or screenshot</label></div><input type="file" accept="image/*" id="f-${e.id}" data-file="${e.id}" hidden><div class="drop" data-drop="${e.id}" tabindex="0">Or tap here, then paste an image</div>`;
+  else h+=`<div class="actions"><label class="btn full" for="f-${e.id}">Add photo or screenshot</label></div><input type="file" accept="image/*" id="f-${e.id}" data-file="${e.id}" hidden><div class="drop" data-drop="${e.id}" tabindex="0">Paste an image</div>`;
   return h+`</div>`;
 }
 function nextUp(){const now=Date.now();return list().find(e=>T(e)+90*60e3>now)}
@@ -529,11 +529,11 @@ function viewHome(){
   let h="";
   if(now<dep){const ms=dep-now;h+=`<div class="hero"><div><div class="k2">Wheels up from CHS</div><div class="countdown" id="cd">${cdText(ms)}</div><div class="sub">Wed Nov 25 · 11:07 AM ET · AA5627</div></div></div>`}
   else if(inTrip){const i=TRIPK.indexOf(tk)+1;h+=`<div class="hero"><div><div class="k2">Day ${i} of 5</div><div class="countdown">${DAYS[tk][0]} ${DAYS[tk][1]}</div><div class="sub">${esc(DAYS[tk][2])}</div></div></div>`}
-  h+=`<div class="sub" style="text-align:center;margin-top:10px">Trip info updated ${esc(UPDATED)} · reopen the app for the latest${cloudOk?"":""}</div>`;
+  h+=`<div class="sub" style="text-align:center;margin-top:10px">Updated ${esc(UPDATED)}</div>`;
   h+=trackerCard();
   h+=nextBar();
   {const nf=E.filter(e=>FLT[e.id]).find(e=>T(e)+3*3600e3>now&&T(e)-now<36*3600e3);
-   if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}<div class="sub" style="margin-top:6px">For push alerts, use the American Airlines app (trip LNONWJ).</div></div>`}
+   if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}</div>`}
   {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
   h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
   h+=seatsCard();
@@ -559,12 +559,11 @@ function viewTrip(){
   h+=`<div class="actions"><button class="btn full" data-evnew="${selDay}">+ Add a trip item for ${d[0]} ${d[1]}</button></div>`;
   {const td=todoList().filter(x=>TKEY(x.d)===selDay);h+=`<h3>To-do this day</h3><div class="card">${td.map(x=>`<div class="line" style="align-items:flex-start">${TCHK(x)}<span style="text-align:left;flex:1;${TSTR(x)}">${esc(x.t)||'<span class="sub">(empty)</span>'}</span></div>`).join("")||'<div class="sub">Nothing yet.</div>'}<div class="actions"><button class="btn full" data-tadd="${d[0]} ${d[1]}">+ Add a to-do for ${d[0]} ${d[1]}</button></div></div>`}
   const s=stayFor(selDay);h+=`<div class="tonight">Tonight: <b>${s?"Tippy &amp; Tom's":"Home"}</b>${s?` · <a href="${M(s.addr.q)}" target="_blank" rel="noopener">Map</a>`:""}</div>`;
-  h+=`<p class="sub" style="text-align:center;margin-top:10px">Swipe left or right to change day</p>`;
   return h;
 }
 const FOLDERS=[
- {k:"flights",l:"Flights",ic:"✈",codes:[["Confirmation","LNONWJ"],["Sven ticket #","0012394210148"],["Drayton ticket #","0012394210149"]],items:["aa5627","aa4049a","aa4049b","aa3201"],note:"Boarding passes come at AA check-in (Tue Nov 24, 11:07 AM, and Sat Nov 28, 5:31 PM). Add them to each flight below."},
- {k:"lounge",l:"Lounge passes",ic:"☕",codes:[],items:[],note:"Add each lounge pass here: a screenshot of the pass (QR or barcode) and any pass number. Tap a pass to show it full screen at the lounge desk."},
+ {k:"flights",l:"Flights",ic:"✈",codes:[["Confirmation","LNONWJ"],["Sven ticket #","0012394210148"],["Drayton ticket #","0012394210149"]],items:["aa5627","aa4049a","aa4049b","aa3201"],note:"Boarding passes come at AA check-in (Tue Nov 24, 11:07 AM, and Sat Nov 28, 5:31 PM)."},
+ {k:"lounge",l:"Lounge passes",ic:"☕",codes:[],items:[],note:""},
  {k:"meds",l:"Meds",ic:"℞",codes:[],items:[],note:"Sven's medicines, doses and bottle photos."}
 ];
 let codeFolder=null;
@@ -579,8 +578,8 @@ function scanDeck(){const d=[],has=id=>d.some(x=>x.id===id);
 async function openScan(id,fallback){scanPhoto=false;deck=scanDeck();di=deck.findIndex(x=>x.id===id);if(di<0){deck=[fallback];di=0}
   showScan();document.getElementById("scan").hidden=false;backStep();try{window._wl=await navigator.wakeLock.request("screen")}catch(e){}}
 function showScan(){const c=deck[di],n=deck.length;zoom=false;document.getElementById("scan").innerHTML=
-  (scanPhoto?`${n>1?`<p class="scn-n">${di+1} of ${n}</p>`:""}<p>${esc(c.l)}</p><div class="zbox" id="zbox"><img src="${c.src}" alt="${esc(c.l)}" data-zoom="1" draggable="false"></div><p class="scn-hint">Tap the picture to zoom in, drag to move around, tap again to zoom out.${n>1?" Swipe for the next one.":""}</p>`:
-  `${n>1?`<p class="scn-n">Code ${di+1} of ${n}</p>`:""}<p>${esc(c.l)}</p><img src="${c.src}" alt="Code: ${esc(c.l)}" draggable="false"><p class="scn-hint">Turn screen brightness all the way up.${n>1?" Swipe for the next code.":""}</p>`)+
+  (scanPhoto?`${n>1?`<p class="scn-n">${di+1} of ${n}</p>`:""}<p>${esc(c.l)}</p><div class="zbox" id="zbox"><img src="${c.src}" alt="${esc(c.l)}" data-zoom="1" draggable="false"></div>`:
+  `${n>1?`<p class="scn-n">Code ${di+1} of ${n}</p>`:""}<p>${esc(c.l)}</p><img src="${c.src}" alt="Code: ${esc(c.l)}" draggable="false">`)+
   (n>1?`<div class="scn-nav"><button class="btn" data-sn="-1" aria-label="Previous code" ${di?"":"disabled"}>‹ Prev</button><button class="btn" id="closeScan">Close</button><button class="btn" data-sn="1" aria-label="Next code" ${di<n-1?"":"disabled"}>Next ›</button></div><div class="scn-dots" aria-hidden="true">${deck.map((x,i)=>`<i class="${i===di?"on":""}"></i>`).join("")}</div>`:`<button class="btn" id="closeScan">Close</button>`)}
 function stepScan(d){const j=di+d;if(j<0||j>=deck.length)return;di=j;showScan()}
 (()=>{const sc=document.getElementById("scan");let sx=null,sy=null;
@@ -595,7 +594,7 @@ function viewCodes(){
   const f=fs.find(x=>x.k===codeFolder);
   if(!f){
     const pend=k=>{const F=FOLDERS.find(x=>x.k===k);return (F.items||[]).filter(id=>{const e=E.find(x=>x.id===id);return e&&e.ticket&&!S.get("img:"+id)}).length};
-    return `<h2>Codes</h2><p class="lead">Pick a folder.</p><div class="tiles">${fs.map(x=>{const n=pend(x.k);return `<button class="tile" data-cfold="${x.k}"><span class="ti" aria-hidden="true">${x.ic}</span>${esc(x.l)}${n?`<span class="sub" style="font-size:11px;color:var(--bad)">${n} pending</span>`:x.qr?`<span class="sub" style="font-size:11px">QR ready</span>`:""}</button>`}).join("")}</div>`;
+    return `<h2>Codes</h2><div class="tiles">${fs.map(x=>{const n=pend(x.k);return `<button class="tile" data-cfold="${x.k}"><span class="ti" aria-hidden="true">${x.ic}</span>${esc(x.l)}${n?`<span class="sub" style="font-size:11px;color:var(--bad)">${n} pending</span>`:x.qr?`<span class="sub" style="font-size:11px">QR ready</span>`:""}</button>`}).join("")}</div>`;
   }
   let h=`<div class="dnav"><button class="btn arrow" data-cfold="" aria-label="Back to folders">‹</button><div class="dt"><div class="d">${esc(f.l)}</div><div class="sub">Codes</div></div><span></span></div>`;
   {const L="codes."+f.k,cl=leList(L,f.codes.map(([l,v],i)=>({id:"c"+i,l,v})));
@@ -633,7 +632,7 @@ function medsBlock(){const ids=medIds();
   h+=`<div class="actions"><button class="btn pri full" data-medshow="rx:${RX[0][0]}">Show bottles and pills to officer</button></div>`;
   rxList().forEach(x=>{const k=x.id,n=x.n||"",st=x.st||"";h+=`<div class="card">`+leRow("medtxt.rx",x,[["n","Medicine"],["st","Strength"],["dir","Directions",1],["ex","Extra line",1]],`<div class="title" style="font-size:17px">${esc(n)}</div><div class="sub" style="color:var(--ink);font-weight:600">${esc(st)}</div><ul class="notes">${x.dir?`<li>${esc(x.dir)}</li>`:""}${x.ex?`<li>${esc(x.ex)}</li>`:""}</ul>`)+`${RX_IMG[k]?`<div class="sub" style="margin-top:10px;font-weight:700;color:var(--ink)">Bottle</div><img src="${RX_IMG[k]}" alt="${esc(n+" "+st)} bottle label" data-medshow="rx:${k}" style="display:block;width:100%;max-width:320px;margin:6px auto 0;border-radius:8px">`:""}${pillBlock(k,n,st)}</div>`});
   h+=leAddBtn("medtxt.rx","Add a medicine");
-  h+=`<h3>Extra photos</h3><p class="lead">Add more photos if needed. Tap a photo to show it full screen. Saved on this phone only.</p>`;
+  h+=`<h3>Extra photos</h3>`;
   
   ids.forEach((id,i)=>{const n=S.get("note:"+id)||"";h+=`<div class="card"><img src="${S.get("img:"+id)}" alt="Medicine photo ${i+1}" data-medshow="${id}" style="display:block;width:100%;border-radius:8px"><textarea data-note="${id}" placeholder="Name and dose (optional)" style="min-height:44px">${esc(n)}</textarea><div class="actions"><button class="btn pri" data-medshow="${id}">Show full screen</button><button class="btn" data-rm="${id}">Remove</button></div></div>`});
   h+=`<div class="actions"><label class="btn ${ids.length?"":"pri"} full" for="medFile">+ Add photo</label></div><input type="file" accept="image/*" multiple id="medFile" hidden>`;
@@ -641,7 +640,7 @@ function medsBlock(){const ids=medIds();
   return h}
 /* Lounge passes (Nov 20, Sven asked): Codes > Lounge passes; pass screenshots saved on this phone (img:lng-*, list lounge:v1), name per pass in note:lng-* */
 function lngIds(){try{return (JSON.parse(S.get("lounge:v1")||"[]")).filter(id=>S.get("img:"+id))}catch(e){return []}}
-function loungeBlock(){const ids=lngIds();let h=`<h3>Pass screenshots</h3><p class="lead">Screenshots saved on this phone only.</p>`;
+function loungeBlock(){const ids=lngIds();let h=`<h3>Pass screenshots</h3>`;
   ids.forEach((id,i)=>{const n=S.get("note:"+id)||"";h+=`<div class="card"><img src="${S.get("img:"+id)}" alt="Lounge pass ${i+1}" data-lngshow="${id}" style="display:block;width:100%;border-radius:8px"><textarea data-note="${id}" placeholder="Which lounge / which flight (optional)" style="min-height:44px">${esc(n)}</textarea><div class="actions"><button class="btn pri" data-lngshow="${id}">Show to scan</button><button class="btn" data-rm="${id}">Remove</button></div></div>`});
   if(!ids.length)h+=`<div class="card"><div class="sub">No passes yet.</div></div>`;
   h+=`<div class="actions"><label class="btn ${ids.length?"":"pri"} full" for="lngFile">+ Add a pass screenshot</label></div><input type="file" accept="image/*" multiple id="lngFile" hidden>`;
@@ -670,7 +669,7 @@ function viewTodo(){
   return h}
 function viewContacts(){const base=CONTACTS.map(([n,r,p],i)=>({id:"c"+i,n,r,p})).concat(showPriv?CONTACTS_PRIV.map(([n,r,p],i)=>({id:"cp"+i,n,r,p})):[]);
   const c=leList("contacts",base);
-  return `<h2>Contacts</h2><p class="lead">Tap Call. If it does nothing, copy the number. Tap ✎ to change one.</p>`+undoBar("contacts","contacts")+`<div class="list">`+c.map(x=>{const p=String(x.p||"").trim(),tel=p.replace(/[^\d+]/g,"");return `<div class="item" style="padding:12px 14px">`+leRow("contacts",x,[["n","Name"],["r","Note"],["p","Phone"]],`<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><div class="rtitle">${esc(x.n||"(no name)")}</div><div class="rsub">${esc(x.r||"")}</div>${p?`<div style="font-family:var(--f-code);font-weight:700;margin-top:2px;user-select:all">${esc(fmtPhone(p))}</div>`:`<div class="rsub" style="color:var(--bad);font-weight:700">No number on file</div>`}</div>${p?`<a class="btn pri" href="tel:${esc(tel)}" target="_blank" rel="noopener">Call</a><button class="btn copy" data-copy="${esc(fmtPhone(p))}">Copy</button>`:""}</div>`)+`</div>`}).join("")+`</div>`+leAddBtn("contacts","Add a contact")}
+  return `<h2>Contacts</h2>`+undoBar("contacts","contacts")+`<div class="list">`+c.map(x=>{const p=String(x.p||"").trim(),tel=p.replace(/[^\d+]/g,"");return `<div class="item" style="padding:12px 14px">`+leRow("contacts",x,[["n","Name"],["r","Note"],["p","Phone"]],`<div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><div class="rtitle">${esc(x.n||"(no name)")}</div><div class="rsub">${esc(x.r||"")}</div>${p?`<div style="font-family:var(--f-code);font-weight:700;margin-top:2px;user-select:all">${esc(fmtPhone(p))}</div>`:`<div class="rsub" style="color:var(--bad);font-weight:700">No number on file</div>`}</div>${p?`<a class="btn pri" href="tel:${esc(tel)}" target="_blank" rel="noopener">Call</a><button class="btn copy" data-copy="${esc(fmtPhone(p))}">Copy</button>`:""}</div>`)+`</div>`}).join("")+`</div>`+leAddBtn("contacts","Add a contact")}
 /* Map (Nov 5): trip places with Directions + Google Maps searches nearby. Links only; artifacts can't embed a map. */
 const MD=(q)=>"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(q);
 const NEAR=[["Restaurants","restaurants"],["Coffee","coffee"],["Pharmacy","pharmacy"],["ATM","ATM"],["Grocery","supermarket"],["Beaches","beach"]];
@@ -681,8 +680,8 @@ const MAPPL=[
 ];
 function nearChips(where){return `<div class="fchips" style="flex-wrap:wrap;overflow:visible">${NEAR.map(([l,q])=>`<a class="fchip" style="display:inline-flex;align-items:center;text-decoration:none" href="${M(q+(where?" near "+where:" near me"))}" target="_blank" rel="noopener">${l}</a>`).join("")}</div>`}
 function viewMap(){
-  let h=`<h2>Map</h2><p class="lead">Tap a button to open Google Maps with directions or a search. Ratings, hours and photos show there.</p>`;
-  h+=`<div class="card"><div class="k2">Near me right now</div><div class="sub">Uses your phone's location in Google Maps.</div>${nearChips("")}</div>`;
+  let h=`<h2>Map</h2>`;
+  h+=`<div class="card"><div class="k2">Near me right now</div>${nearChips("")}</div>`;
   h+=undoBar("map","map places");
   leList("map",MAPPL.map(pl=>({id:pl.k,l:pl.l,d:pl.d,a:pl.p.text,dir:pl.dir||"",near:pl.near}))).forEach(x=>{
     const b=MAPPL.find(m=>m.k===x.id),moved=!b||x.a!==b.p.text,pl={l:x.l,d:x.d,near:x.near,p:{text:x.a||"",q:moved?(x.a||x.l||""):b.p.q},dir:x.dir&&(!b||x.dir!==(b.dir||"")||!moved)?x.dir:"",ev:b?b.ev:[]};
@@ -693,7 +692,6 @@ function viewMap(){
     if(evs.length)h+=`<div style="margin-top:8px">${evs.map(e=>{const dk=dayKey(e),dd=DAYS[dk];return `<button class="btn" data-tile="stay:${e.id}" style="width:100%;justify-content:flex-start;text-align:left;margin-top:6px;min-height:44px"><span class="when" style="font-size:13px;min-width:84px">${dd?esc(dd[0]+" "+dd[1]):""}</span><span style="flex:1;min-width:0">${esc(e.title)}</span></button>`}).join("")}</div>`;
     h+=`</div>`});
   h+=leAddBtn("map","Add a place");
-  h+=`<div class="card"><div class="k2">Before you fly</div><div class="sub">In the Google Maps app, tap your profile picture, then <b>Offline maps</b> → <b>Select your own map</b>, and cover Sarasota. Search and directions then work without data.</div></div>`;
   return h;
 }
 const INFO1=[["Flights","LNONWJ · American Airlines · ticketed Nov 17, 2026"],["Sven AAdvantage","Gold"],["Bags","1st checked bag free each · 2nd $60 at airport, $55 online"],["Time zone","Same as Charleston (ET)"]];
@@ -703,8 +701,8 @@ function infoRows(L,base){return leList(L,base.map(([l,v],i)=>({id:"r"+i,l,v})))
 function viewInfo(){
   return `<h2>Documents & money</h2>`+undoBar("info","this page")+`<div class="card">${infoRows("info.docs",INFO1)}${leAddBtn("info.docs","Add a line")}</div>
   <h3>Websites</h3><div class="card">${(()=>{const seen=new Set();return list().flatMap(e=>(LINKS[e.id]||[]).map(x=>[e.title,...x])).filter(([,,u])=>!seen.has(u)&&seen.add(u)).map(([t,l,u])=>`<div class="line"><span class="sub" style="max-width:45%">${esc(t)}</span><span><a href="${esc(u)}" target="_blank" rel="noopener" style="color:var(--sea);font-weight:700">${esc(l)} ↗</a></span></div>`).join("")})()}</div>
-  <h3>Settings</h3><div class="card"><label class="toggle" for="privToggle"><span><b>Show private items</b><br><span class="sub">Off every time the app opens.</span></span><input type="checkbox" id="privToggle" ${showPriv?"checked":""}></label></div>
-  <div class="card"><div class="sub">Saved photos, notes, packing and money live only in this browser on this phone. Set up Nov 18, 2026 from the American Airlines confirmation in Gmail.</div><div class="actions"><button class="btn full" id="clearAll">Clear saved photos, notes, packing and money</button></div><div id="clearConfirm"></div></div>`}
+  <h3>Settings</h3><div class="card"><label class="toggle" for="privToggle"><span><b>Show private items</b></span><input type="checkbox" id="privToggle" ${showPriv?"checked":""}></label></div>
+  <div class="card"><div class="actions"><button class="btn full" id="clearAll">Clear saved photos, notes, packing and money</button></div><div id="clearConfirm"></div></div>`}
 
 
 /* ===== undo history: keeps up to 30 earlier versions of packing and money on this phone ===== */
@@ -714,7 +712,7 @@ const HIST={push(k,prev){if(prev==null)return;try{const h=JSON.parse(localStorag
     h.push({t:now,v:prev,burst:typing});while(h.length>30)h.shift();localStorage.setItem("hist:"+k,JSON.stringify(h))}catch(e){}},
   count(k){try{return JSON.parse(localStorage.getItem("hist:"+k)||"[]").length}catch(e){return 0}},
   pop(k){try{const h=JSON.parse(localStorage.getItem("hist:"+k)||"[]");const x=h.pop();localStorage.setItem("hist:"+k,JSON.stringify(h));return x}catch(e){return null}}};
-function undoBar(k,label){const n=HIST.count(k);return n?`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span class="sub">Changed something by mistake?</span><button class="btn" data-undo="${k}">↶ Undo last change</button></div><div class="sub" style="margin-top:4px">${n} earlier version${n>1?"s":""} saved for ${label}. Tap again to go further back.</div></div>`:""}
+function undoBar(k,label){const n=HIST.count(k);return n?`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span class="sub">Changed something by mistake?</span><button class="btn" data-undo="${k}">↶ Undo last change</button></div></div>`:""}
 
 /* ===== packing ===== */
 const CATS=["Documents","Money","Bags","Clothes","Health","Gear","Trip day","Personal","Surprise"];
@@ -733,7 +731,7 @@ function viewPack(){
   if(!shown.length)h+=`<div class="card">Nothing here.</div>`;
   const allCats=[...new Set(CATS.concat(pack.map(i=>i.cat)))].filter(c=>showPriv||(c!=="Surprise"&&c!=="Personal"));
   h+=`<h3>Add an item</h3><div class="card"><form id="addForm" class="addrow"><input id="addText" placeholder="Item name" aria-label="Item name" autocomplete="off"><select id="addCat" aria-label="Category">${allCats.map(c=>`<option>${esc(c)}</option>`).join("")}</select><button class="btn pri" style="grid-column:1/-1" type="submit">Add to list</button></form></div>`;
-  h+=`<div class="card"><div class="sub">Your changes save on this phone only. Started from the trip list (Nov 18).</div><div class="actions"><button class="btn" data-pclear="1">Uncheck all</button><button class="btn" data-preset="1">Reset to workbook list</button></div><div id="presetConfirm"></div></div>`;
+  h+=`<div class="card"><div class="actions"><button class="btn" data-pclear="1">Uncheck all</button><button class="btn" data-preset="1">Reset to workbook list</button></div><div id="presetConfirm"></div></div>`;
   return h;
 }
 function prow(i){
@@ -782,7 +780,7 @@ function oldMoneyCard(){const o=oldMoney();if(!o.length)return "";
 function viewMoney(){const m=loadMoney(),c=moneyCalc(),cashStart=+m.cash||0,bud=+m.budget||0;
   let h=`<h2>Money</h2>`+undoBar("money","money")+oldMoneyCard()+`<div class="mstats">
    ${cashEdit?`<form class="mstat" id="cashForm"><div class="k2">Cash in hand now</div><input id="cashNow" inputmode="decimal" value="${(cashStart-c.cashOut+(+m.cashAdj||0)).toFixed(2)}" aria-label="Cash in hand now" style="font:700 22px var(--f-ui);width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;margin:4px 0;background:var(--surface2);color:var(--ink);min-height:46px"><div class="err" id="cashErr" style="color:var(--bad);font-size:13px"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button class="btn pri" type="submit">Save</button><button class="btn" type="button" data-cashcancel="1">Cancel</button></div></form>`
-   :`<button class="mstat" data-cashedit="1" style="text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%"><div class="k2">Cash left ✎</div><div class="mv">${$(cashStart-c.cashOut+(+m.cashAdj||0))}</div><div class="ms">of ${$(cashStart)} brought${+m.cashAdj?" · adjusted by hand":""}. Tap to change</div></button>`}
+   :`<button class="mstat" data-cashedit="1" style="text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%"><div class="k2">Cash left ✎</div><div class="mv">${$(cashStart-c.cashOut+(+m.cashAdj||0))}</div><div class="ms">of ${$(cashStart)} brought${+m.cashAdj?" · adjusted by hand":""}</div></button>`}
    <div class="mstat"><div class="k2">Spent on the trip</div><div class="mv">${$(c.trip)}</div><div class="ms">${bud?`of ${$(bud)} budget`:"Budget not set"}</div>${bud?`<div class="pk-prog"><i style="width:${Math.min(100,Math.round(c.trip/bud*100))}%;${c.trip>bud?"background:var(--bad)":""}"></i></div>`:""}</div>
    ${(()=>{const bk=bookedList();let pre=0,none=0,byA=c.byA||0;bk.forEach(b=>{if(b.amt==null||b.amt===""||isNaN(+b.amt))none++;else if(SKIP_ALIA_PAID&&b.by==="Alia")byA+=+b.amt;else pre+=+b.amt});
      return `<div class="mstat" style="grid-column:1/-1"><div class="k2">Total trip cost</div><div class="mv">${$(c.trip+pre)}</div><div class="ms">${$(c.trip)} spent on the trip + ${$(pre)} booked & paid before${byA?` · ${$(byA)} paid by Alia not counted`:""}${none?` · ${none} booked item${none>1?"s":""} with no amount not counted`:""}</div></div>`})()}</div>`;
@@ -805,7 +803,7 @@ function viewMoney(){const m=loadMoney(),c=moneyCalc(),cashStart=+m.cash||0,bud=
     if(ppay===i)r+=`<div class="ped" style="grid-column:1/-1"><div class="mform"><label class="full">Amount paid (USD)<input id="pAmt-${i}" inputmode="decimal" placeholder="${esc(x||"")}" value="${a!=null?a:""}"></label></div>
      <div class="err" id="pErr-${i}" style="color:var(--bad);font-size:13px"></div>
      <div class="actions"><button class="btn" data-pcancel="1">Cancel</button><button class="btn pri" data-plog="${i}">Log as paid</button></div></div>`;
-    return r+`</div>`}).join("")}</div><div class="sub" style="margin:6px 4px 0">Mark paid adds it to the spending log and takes it off cash left.</div>`;
+    return r+`</div>`}).join("")}</div>`;
   const it=m.items.slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
   h+=`<h3>Spending log</h3>`+(it.length?`<div class="list">${it.map(mrow).join("")}</div>`:`<div class="card sub">Nothing logged yet.</div>`);
   const bk=bookedList();
@@ -822,8 +820,7 @@ function viewMoney(){const m=loadMoney(),c=moneyCalc(),cashStart=+m.cash||0,bud=
     return r+`</div>`}).join("")}</div><div class="actions"><button class="btn full" data-badd="1">+ Add a booked item</button></div>`;
   h+=`<h3>Settings</h3><div class="card mform">
    <label>Trip budget (USD)<input data-mset="budget" inputmode="decimal" placeholder="Not set" value="${esc(m.budget)}"></label>
-   <label>Cash brought (USD)<input data-mset="cash" inputmode="decimal" value="${esc(m.cash)}"></label>
-   <div class="sub full">Saved on this phone only.</div></div>`;
+   <label>Cash brought (USD)<input data-mset="cash" inputmode="decimal" value="${esc(m.cash)}"></label></div>`;
   return h}
 /* ===== Peso calculator + receipt photos (Nov 7) ===== */
 let cv={dop:"",usd:""},rcptDel=null,rcptBusy={};
@@ -845,7 +842,7 @@ function saveRc(a){S.set("rcpt:v1",JSON.stringify(a))}
 const rcAmt=(n,cur)=>{if(n==null)return "";const r=+loadMoney().rate;return cur==="DOP"?`RD$${(+n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}${r>0?" ≈ "+$(n/r):""}`:cur==="USD"?$(+n):(+n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
 function rcptBlock(){const rs=loadRc().slice().sort((a,b)=>b.ts-a.ts);
   let h=`<h3>Receipts</h3><div class="card"><div class="actions"><label class="btn pri full" for="rcFile">+ Add receipt photo</label></div><input type="file" accept="image/*" multiple id="rcFile" hidden>
-   <div class="sub" style="margin-top:6px">${rcptAI?"Take or pick a photo and Claude reads it: place, total, tax, whether the 10% service is already included. ":""}Photos are saved on this phone only. Lay the receipt flat in good light.</div></div>`;
+   <div class="sub" style="margin-top:6px"></div></div>`;
   if(rs.length)h+=rs.map(rcRow).join("");return h}
 function rcRow(x){const src=S.get("img:rcpt-"+x.id),a=x.res;
   let h=`<div class="card" style="display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start;margin-top:8px">
@@ -905,7 +902,7 @@ function splitBlock(m){const c=splitCalc(),xs=(m.transfers||[]).slice().sort((a,
   const inc=c.unset.length||c.noRate||c.xNoRate;
   let h=`<h3>Balance with Alia</h3><div class="card">${inc?`<div class="chips"><span class="chip c-warn">Incomplete: see below</span></div>`:""}<div style="font-size:24px;font-weight:700;margin-bottom:4px">${inc?"So far: ":""}${owe}</div>
    <div class="sub">Shared costs: Sven paid ${$(c.S)} · Alia paid ${$(c.A)} · half each ${$(c.half)}<br>Cash between you: Alia → Sven ${$(c.a2s)} · Sven → Alia ${$(c.s2a)}</div>`;
-  const warn=[];if(c.unset.length)warn.push(`${c.unset.length} cost${c.unset.length>1?"s":""} with no payer set, not counted: ${c.unset.map(esc).join(", ")}. Tap ✎ on each to set who paid.`);
+  const warn=[];if(c.unset.length)warn.push(`${c.unset.length} cost${c.unset.length>1?"s":""} with no payer set, not counted: ${c.unset.map(esc).join(", ")}.`);
   if(c.noRate||c.xNoRate)warn.push(`${c.noRate+c.xNoRate} peso amount${c.noRate+c.xNoRate>1?"s":""} not counted until the peso rate is set.`);
   if(c.noAmt)warn.push(`${c.noAmt} booked item${c.noAmt>1?"s":""} with no dollar amount not counted.`);
   if(warn.length)h+=`<div class="sub" style="color:var(--warn);margin-top:8px">${warn.join("<br>")}</div>`;
@@ -1067,16 +1064,9 @@ document.addEventListener("change",ev=>{const t=ev.target,id=t.dataset.evday||t.
 function findGet(){try{return JSON.parse(localStorage.getItem("find:v1")||"{}")||{}}catch(e){return {}}}
 let findEdit=false;
 function viewFind(){const f=findGet(),link=(f.link||"").trim();
-  let h=`<h2>Find Boo</h2><div class="card"><div class="sub">Her location comes from Google Maps location sharing on her iPhone. This button opens Google Maps.</div>
-  <div class="actions" style="grid-template-columns:1fr"><a class="btn pri" href="${link?esc(link):"https://www.google.com/maps"}" target="_blank" rel="noopener">${link?"◎ Show Drayton now":"◎ Open Google Maps"}</a></div>
-  ${link?"":`<div class="sub" style="margin-top:8px">In Google Maps, tap your profile picture, then <b>Location sharing</b>, then <b>Drayton</b>.</div>`}</div>`;
-  h+=`<div class="card"><div class="k2">Her live-location link (optional)</div>${findEdit?`<div class="mform"><label class="full">Link from Drayton<input id="findLink" value="${esc(link)}" placeholder="https://maps.app.goo.gl/..."></label></div><div class="actions"><button class="btn" data-findclear="1">Clear</button><button class="btn pri" data-findsave="1">Save</button></div>`:`<div class="sub">${link?esc(link):"Not set. If Drayton shares by link (Location sharing, New share, Copy link) and texts it to you, paste it here and the button opens her straight away."}</div><div class="actions" style="grid-template-columns:1fr"><button class="btn" data-findedit="1">✎ ${link?"Change link":"Add her link"}</button></div>`}</div>`;
-  h+=`<details class="card"><summary><b>Set it up on her iPhone</b></summary><ol class="sub" style="padding-left:18px;margin:8px 0 0">
-   <li>Install Google Maps and sign in with her own Google account.</li>
-   <li>Tap her profile picture, then Location sharing, then New share. Choose Until you turn this off and pick your Gmail.</li>
-   <li>iPhone Settings, then Google Maps: Location <b>Always</b>, Precise Location on, Background App Refresh on.</li>
-   <li>Settings, then Privacy &amp; Security: Location Services on. Low Power Mode makes updates slower.</li>
-   <li>Test it at home: her dot should show with a recent time.</li></ol></details>`;
+  let h=`<h2>Find Boo</h2><div class="card">  <div class="actions" style="grid-template-columns:1fr"><a class="btn pri" href="${link?esc(link):"https://www.google.com/maps"}" target="_blank" rel="noopener">${link?"◎ Show Drayton now":"◎ Open Google Maps"}</a></div>
+  </div>`;
+  h+=`<div class="card"><div class="k2">Her live-location link (optional)</div>${findEdit?`<div class="mform"><label class="full">Link from Drayton<input id="findLink" value="${esc(link)}" placeholder="https://maps.app.goo.gl/..."></label></div><div class="actions"><button class="btn" data-findclear="1">Clear</button><button class="btn pri" data-findsave="1">Save</button></div>`:`<div class="sub">${link?esc(link):"Not set."}</div><div class="actions" style="grid-template-columns:1fr"><button class="btn" data-findedit="1">✎ ${link?"Change link":"Add her link"}</button></div>`}</div>`;
   return h}
 const VIEWS={home:["Home",viewHome,'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'],trip:["Trip",viewTrip,'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],pack:["Pack",viewPack,'<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V4h6v3M9 12h6"/>'],meds:["Meds",viewMeds,'<rect x="6" y="8" width="12" height="13" rx="2"/><path d="M5 3h14v5H5zM12 11v7M8.5 14.5h7"/>'],todo:["To-do",viewTodo,'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>'],contacts:["Contacts",viewContacts,'<path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],find:["Find Boo",viewFind,'<circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/>']};
 const INFO=["Info",viewInfo];
