@@ -257,6 +257,15 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 .legend{color:var(--muted)}
 
 .landbox{background:var(--ok-soft)}
+.fucard{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(22,115,201,.16);padding:14px;margin:10px 0 14px;border-top:5px solid var(--sea)}
+.fuhd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fubig{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fubig>div{background:var(--sun-soft);border-radius:12px;padding:10px}
+.fubig .sl,.landbox .sl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.fubig .fv{font-size:28px;font-weight:800;color:var(--sea);line-height:1.15;font-variant-numeric:tabular-nums}
+.fubig .was{font-size:13px;color:var(--warn);text-decoration:line-through}
+.fubig .fg{font-weight:700;font-size:14px;margin-top:2px}
+.fuup{font-size:13px;font-weight:600;color:var(--muted);margin-top:8px}
 .trkln{padding:10px 0;border-top:1px solid var(--line)}
 .trkln:first-child{border-top:0}
 .trkln .fstat{margin-top:6px}
@@ -282,7 +291,7 @@ nav.tabs{background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-ba
 <script>
 /* ===== DATA (Sarasota Thanksgiving, set up Nov 18, 2026 from the AA confirmation LNONWJ in Gmail) =====
    All times are Eastern (ET). Sarasota is the same time zone as Charleston. */
-const UPDATED="Fri Nov 20, 9:35 PM ET";
+const UPDATED="Fri Nov 20, 9:50 PM ET";
 const DRT="-05:00", ET="-05:00";
 const M=(q)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
 const PLACES={
@@ -355,12 +364,28 @@ const FLT={aa5627:"AA5627",aa4049a:"AA4049",aa4049b:"AA4049",aa3201:"AA3201"};
 const FA=f=>"https://www.flightaware.com/live/flight/AAL"+f.slice(2);
 const GS=f=>"https://www.google.com/search?q="+encodeURIComponent(f+" flight status");
 /* Plane tracker (Nov 20, Sven asked): tap to see the plane live on a map (FlightAware / Flightradar24; artifacts can't embed a map) + land time updates Sven sends from the air */
-const LAND={}; // land time updates, e.g. aa4049a:{eta:"5:12 PM ET",at:"Wed Nov 25, 3:40 PM ET",note:"running 11 min late"}
+/* Flight updates (Nov 20, 9:50 PM, Sven asked: time, gate, EVERYTHING changes with an update, very visible, esp. Tippy & Tom). Claude fills FSTAT from Sven's messages / live status, rebuilds, republishes. Fields (all optional): st status ("On time","Delayed 25 min","Boarding","In the air","Landed","Cancelled"), dep new departure time, arr new landing time, gate departure gate, agate arrival gate, bag baggage claim, at when updated ("Wed Nov 25, 3:40 PM ET"), note. */
+const FSTAT={};
 const FR=f=>"https://www.flightradar24.com/data/flights/"+f.toLowerCase();
 function fltBtns(f){return `<div class="fstat"><a class="btn pri" href="${FA(f)}" target="_blank" rel="noopener">✈ Plane on a map ↗</a><a class="btn" href="${FR(f)}" target="_blank" rel="noopener">Flightradar24 ↗</a><a class="btn" style="grid-column:1/-1" href="${GS(f)}" target="_blank" rel="noopener">Google flight status ↗</a></div>`}
 function arrOf(e){return String(e.t).split(" → ")[1]||""}
-function landBox(e){if(!FLT[e.id])return "";const L=LAND[e.id],sch=arrOf(e);return `<div class="seatbox landbox"><div class="sl">${L?"Land time update":"Scheduled to land"}</div><div class="sv">${esc(L?L.eta:sch)}</div><div class="sc">${L?`Scheduled ${esc(sch)} · updated ${esc(L.at)}${L.note?" · "+esc(L.note):""}`:"Live landing time: tap Plane on a map"}</div></div>`}
-function trackerCard(){const f=list().filter(e=>FLT[e.id]);if(!f.length)return "";return `<h3>Plane tracker</h3><div class="card">${f.map(e=>{const d=DAYS[dayKey(e)]||["",""],L=LAND[e.id];return `<div class="trkln"><div class="sub">${esc(d[0]+" "+d[1])} · ${esc(e.t)}</div><b>${esc(e.title)}</b>${L?`<div style="color:var(--sea);font-weight:700">Land time update: ${esc(L.eta)} <span class="sub">(updated ${esc(L.at)})</span></div>`:""}${fltBtns(FLT[e.id])}</div>`}).join("")}<div class="sub" style="margin-top:6px">The map opens in your browser and shows the plane live once it's in the air, with the latest landing time.</div></div>`}
+const FOCUS=null; // guest copies may list the flights that matter most to them
+function arrMs(e){const a=arrOf(e).replace(" ET","").trim(),m=a.match(/(\d+):(\d+)\s*(AM|PM)/);if(!m)return T(e)+3*36e5;let h=+m[1]%12+(m[3]==="PM"?12:0);const d=new Date(T(e));const x=new Date(String(e.start).slice(0,10)+"T"+String(h).padStart(2,"0")+":"+m[2]+":00"+ET).getTime();return x<T(e)?x+864e5:x}
+function depOf(e){return String(e.t).split(" → ")[0].replace(" ET","")}
+function fStat(e){return FSTAT[e.id]||{}}
+function stCls(t){t=t||"";return /cancel/i.test(t)?"c-bad":/delay|late|divert|change/i.test(t)?"c-warn":/on time|board|in the air|depart|land|arriv/i.test(t)?"c-ok":"c-cat"}
+function stChipF(e){const F=fStat(e),t=F.st||"Scheduled";return `<span class="chip ${stCls(t)}">${esc(t)}</span>`}
+function fLines(e){const F=fStat(e),sd=depOf(e),sa=arrOf(e).replace(" ET","");const L=[];
+  L.push(["Departs",(F.dep||sd)+(F.dep&&F.dep!==sd?` (was ${sd})`:"")]);if(F.gate)L.push(["Gate",F.gate]);
+  L.push(["Lands",(F.arr||sa)+(F.arr&&F.arr!==sa?` (was ${sa})`:"")]);if(F.agate)L.push(["Arrival gate",F.agate]);if(F.bag)L.push(["Bags at",F.bag]);if(F.note)L.push(["Note",F.note]);return L}
+function landBox(e){if(!FLT[e.id])return "";const F=fStat(e);return `<div class="seatbox landbox"><div class="fuhd"><span class="sl">Flight status</span>${stChipF(e)}</div>${fLines(e).map(([a,b])=>`<div class="line"><span class="sub">${esc(a)}</span><span><b>${esc(b)}</b></span></div>`).join("")}<div class="sub" style="margin-top:4px">${F.at?"Updated "+esc(F.at):"No changes reported yet"}</div></div>`}
+function fuFocus(){const f=list().filter(e=>FLT[e.id]),now=Date.now(),pool=FOCUS?f.filter(e=>FOCUS.includes(e.id)):f;return pool.find(e=>arrMs(e)+2*36e5>now)||pool[pool.length-1]}
+function trackerCard(){const f=list().filter(e=>FLT[e.id]);if(!f.length)return "";const x=fuFocus(),F=fStat(x),d=DAYS[dayKey(x)]||["",""],sd=depOf(x),sa=arrOf(x).replace(" ET","");
+  let h=`<div class="fucard"><div class="fuhd"><span class="k2">Flight updates</span>${stChipF(x)}</div><div class="sub">${esc(d[0]+" "+d[1])}</div><div class="title" style="margin:0 0 6px">${esc(x.title)}</div>
+  <div class="fubig"><div><div class="sl">Departs</div><div class="fv">${esc(F.dep||sd)}</div>${F.dep&&F.dep!==sd?`<div class="was">was ${esc(sd)}</div>`:""}<div class="fg">${F.gate?"Gate "+esc(F.gate):"Gate not posted yet"}</div></div><div><div class="sl">Lands</div><div class="fv">${esc(F.arr||sa)}</div>${F.arr&&F.arr!==sa?`<div class="was">was ${esc(sa)}</div>`:""}<div class="fg">${F.bag?"Bags: "+esc(F.bag):F.agate?"Gate "+esc(F.agate):"Bags: not posted yet"}</div></div></div>
+  ${F.note?`<div class="missing" style="margin-top:8px">${esc(F.note)}</div>`:""}<div class="fuup">${F.at?"Updated "+esc(F.at):"No changes reported yet"} · App updated ${esc(UPDATED)}</div>${fltBtns(FLT[x.id])}</div>`;
+  const o=f.filter(e=>e!==x);if(o.length)h+=`<h3>All flights</h3><div class="card">${o.map(e=>{const G=fStat(e),dd=DAYS[dayKey(e)]||["",""];return `<div class="trkln"><div class="fuhd"><span class="sub">${esc(dd[0]+" "+dd[1])}</span>${stChipF(e)}</div><b>${esc(e.title)}</b><div class="sub" style="color:var(--ink)">${esc((G.dep||depOf(e))+" → "+(G.arr||arrOf(e).replace(" ET",""))+" ET")}${G.gate?" · Gate "+esc(G.gate):""}${G.bag?" · Bags "+esc(G.bag):""}</div>${G.note?`<div class="sub">${esc(G.note)}</div>`:""}<div class="fstat"><a class="btn" href="${FA(FLT[e.id])}" target="_blank" rel="noopener">✈ Plane on a map ↗</a><a class="btn" href="${GS(FLT[e.id])}" target="_blank" rel="noopener">Google status ↗</a></div></div>`}).join("")}</div>`;
+  return h+`<div class="sub" style="text-align:center;margin:6px 0 10px">To see the newest updates, close the app and open the link again.</div>`}
 const LINKS={"aa5627":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049a":[["American Airlines (aa.com)","https://www.aa.com"]],"aa4049b":[["American Airlines (aa.com)","https://www.aa.com"]],"aa3201":[["American Airlines (aa.com)","https://www.aa.com"]],"srqinfo":[["SRQ airport","https://srq-airport.com"]]};
 const PACK_DEFAULT=[{"id": "p0", "text": "Sven's driver's license (TSA)", "cat": "Documents", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p1", "text": "Boarding passes in the AA app (both)", "cat": "Documents", "status": "Plan", "priv": false, "note": "Check-in opens Tue Nov 24, 11:07 AM", "packed": false}, {"id": "p2", "text": "Credit card + some cash", "cat": "Money", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p3", "text": "Decide: carry-ons only or check a bag", "cat": "Bags", "status": "Plan", "priv": false, "note": "1st checked bag is free", "packed": false}, {"id": "p4", "text": "Clothes for 4 nights (Sven)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p5", "text": "Clothes for 4 nights (Drayton)", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p6", "text": "Thanksgiving outfits", "cat": "Clothes", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p7", "text": "Swimsuits", "cat": "Clothes", "status": "Optional", "priv": false, "note": "", "packed": false}, {"id": "p8", "text": "Sven's meds, original bottles, in carry-on", "cat": "Health", "status": "Need", "priv": false, "note": "Plus a few extra days", "packed": false}, {"id": "p9", "text": "Phone chargers + battery pack", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p10", "text": "Books for Drayton", "cat": "Gear", "status": "Have?", "priv": false, "note": "", "packed": false}, {"id": "p11", "text": "Snacks for the Charlotte layover", "cat": "Trip day", "status": "Buy there", "priv": false, "note": "", "packed": false}];
 const QR={};
@@ -452,7 +477,7 @@ function row(e){
   const o=open.has(e.id), past=Date.now()>T(e)+3*3600e3, [t,sub]=short(e);
   const extra=[e.cat,STW[e.status]];if(e.ticket&&!S.get("img:"+e.id))extra.push("ticket pending");
   return `<div class="item ${o?"open":""} ${past?"past":""} ${e.private?"private":""}" id="c-${e.id}">
-  <button class="rowbtn" data-open="${e.id}" aria-expanded="${o}"><span class="rt">${esc(t)}${sub?`<small>${esc(sub)}</small>`:""}</span><span class="rm"><span class="rtitle">${esc(e.title)}</span><span class="rsub">${esc(extra.join(" · "))}</span>${(x=>x?`<span class="rseat">Seats ${esc(x.st)}${x.cab?" · "+esc(x.cab):""}${x.up?" · upgrade requested":""}</span>`:"")(seatOf(e))}</span><span class="dot ${e.status}"></span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button class="rowbtn" data-open="${e.id}" aria-expanded="${o}"><span class="rt">${esc(t)}${sub?`<small>${esc(sub)}</small>`:""}</span><span class="rm"><span class="rtitle">${esc(e.title)}</span><span class="rsub">${esc(extra.join(" · "))}</span>${(x=>x?`<span class="rseat">Seats ${esc(x.st)}${x.cab?" · "+esc(x.cab):""}${x.up?" · upgrade requested":""}</span>`:"")(seatOf(e))}${FLT[e.id]&&FSTAT[e.id]?`<span class="rseat" style="background:none;padding:0;margin-left:6px">${stChipF(e)}</span>`:""}</span><span class="dot ${e.status}"></span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
   ${o?`<div class="rbody">${body(e)}</div>`:""}</div>`;
 }
 function ticketBlock(e){
@@ -486,13 +511,13 @@ function viewHome(){
   if(now<dep){const ms=dep-now;h+=`<div class="hero"><div><div class="k2">Wheels up from CHS</div><div class="countdown" id="cd">${cdText(ms)}</div><div class="sub">Wed Nov 25 · 11:07 AM ET · AA5627</div></div></div>`}
   else if(inTrip){const i=TRIPK.indexOf(tk)+1;h+=`<div class="hero"><div><div class="k2">Day ${i} of 5</div><div class="countdown">${DAYS[tk][0]} ${DAYS[tk][1]}</div><div class="sub">${esc(DAYS[tk][2])}</div></div></div>`}
   h+=`<div class="sub" style="text-align:center;margin-top:10px">Trip info updated ${esc(UPDATED)} · reopen the link for the latest${cloudOk?"":""}</div>`;
+  h+=trackerCard();
   h+=nextBar();
   {const nf=E.filter(e=>FLT[e.id]).find(e=>T(e)+3*3600e3>now&&T(e)-now<36*3600e3);
    if(nf)h+=`<div class="card"><div class="k2">Flight status · ${until(T(nf)-now)}</div><div class="title" style="margin:2px 0 0">${esc(nf.title)}</div><div class="sub">${esc(nf.t)}</div>${fltBtns(FLT[nf.id])}<div class="sub" style="margin-top:6px">For push alerts, use the American Airlines app (trip LNONWJ).</div></div>`}
   {const pendT=list().filter(e=>e.ticket&&!S.get("img:"+e.id)).length;h+=`<div class="tiles">${[["flights","Flights","✈"],["stay:tt","Tippy & Tom's","⌂"],["rides","Rides","➜"],["fun","Thanksgiving","♨"],["tab:codes","Codes","#"],["tab:contacts","Contacts","☎"],["tab:info","Info & settings","i"]].map(([k,l,ic])=>`<button class="tile" data-tile="${k}"><span class="ti" aria-hidden="true">${ic}</span><span>${l}${k==="tab:codes"&&pendT?`<span class="badge">${pendT}</span>`:""}</span></button>`).join("")}</div>`;}
   h+=`<div class="actions" style="grid-template-columns:1fr;margin:4px 0 8px"><button class="btn pri" data-tile="tab:map">Map · places &amp; food nearby</button><button class="btn" data-tile="tab:find">◎ Find Drayton</button></div>`;
   h+=seatsCard();
-  h+=trackerCard();
   if(inTrip){const items=list().filter(e=>dayKey(e)===tk);h+=`<h3>Today</h3><div class="list">${items.map(row).join("")||'<div class="item" style="padding:14px">Nothing scheduled.</div>'}</div>`}
   h+=`<h3>${inTrip?"Tonight":"First night · Wed Nov 25"}</h3>`+stayCard(inTrip?tk:"2026-11-25",inTrip?"Where you sleep tonight":"Where you sleep");
   if(!inTrip&&now<dep){const due=dueSoon().slice(0,3);if(due.length)h+=`<h3>To-do next</h3><div class="card">${due.map(([,d,x])=>`<div class="line"><span class="when" style="font-size:14px;min-width:84px">${esc(d)}</span><span style="text-align:left;flex:1">${esc(x)}</span></div>`).join("")}<div class="actions"><button class="btn full" data-tile="tab:todo">See all to-dos</button></div></div>`}
